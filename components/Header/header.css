@@ -1,0 +1,98 @@
+.top-bar {
+  background-color: black;
+  color: white;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 70px;
+}
+
+.scrolling-text-one {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 70px;
+  animation: scroll-left-one 10s linear infinite forwards;
+}
+
+@keyframes scroll-left-one {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.scrolling-text-two {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 70px;
+  /* animation: name duration timing-function delay iteration-count direction fill-mode; */
+  animation: scroll-left-two 10s linear infinite forwards;
+}
+
+@keyframes slideUpOpen {
+  0% {
+    transform: translateY(100vh) translateZ(0px);
+    left: 0;
+    top: 0;
+  }
+
+  100% {
+    transform: translateY(0vh) translateZ(0px);
+    left: 0;
+    top: 0;
+  }
+}
+
+.animate-slideUpOpen {
+  -webkit-animation: slideUpOpen 1s ease-in-out 1;
+  animation: slideUpOpen 1s ease-in-out 1 forwards;
+}
+
+@keyframes slideUpClose {
+  0% {
+    transform: translateY(0vh) translateZ(0px);
+    left: 0;
+    top: 0;
+  }
+
+  100% {
+    transform: translateY(-100vh) translateZ(0px);
+    left: 0;
+    top: 0;
+    /* display: none; */
+  }
+}
+
+.animate-slideUpClose {
+  -webkit-animation: slideUpClose 1s ease-in-out 1;
+  animation: slideUpClose 1s ease-in-out 1 forwards;
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+    left: 0;
+    top: 0;
+    position: relative;
+    z-index: 9999;
+  }
+
+  100% {
+    transform: translateY(0);
+    left: 0;
+    top: 0;
+    position: fixed;
+    z-index: 9999;
+  }
+}
+
+.animate-slideDown {
+  animation: slideDown .5s ease-in-out forwards;
+}
