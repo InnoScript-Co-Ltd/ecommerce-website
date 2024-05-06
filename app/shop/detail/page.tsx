@@ -1,4 +1,33 @@
+'use client'
+
+import { keys } from "@/constant/key";
+import { useAppDispatch } from "@/helper/hook"
+import { addCart } from "@/services/redux/cartSlice";
+import { increment } from "@/services/redux/counterSlice";
+import { useRouter } from "next/navigation";
+
+const cartLists = [
+    {
+        title : 'Lorem ipsum dolor sit amet consectetur.',
+        price : 'USD .300.00',
+        desc : 'UK S (6-8) | EU 28 | US-4',
+        item_count : 1
+    }
+];
+
 const shopDetail = () => {
+
+    const dispatch = useAppDispatch();
+    const router = useRouter();
+
+
+
+    const addToCart = () => {
+
+        localStorage.setItem(keys.CART, JSON.stringify(cartLists));
+        dispatch(addCart(cartLists));
+        router.push('/cart');
+    }
 
 
     return (
@@ -10,7 +39,9 @@ const shopDetail = () => {
                 </div>
 
                 <div>
-                    <button className=" w-[117px] h-[44px] font-bold text-[16px] leading-[19px] bg-black text-white rounded-full  transition duration-150 ease-in-out hover:bg-primary-accent-200 hover:shadow-lg active:bg-slate-50 active:text-primary active:shadow-md motion-reduce:transition-none">
+                    <button
+                    onClick={addToCart} 
+                    className=" w-[117px] h-[44px] font-bold text-[16px] leading-[19px] bg-black text-white rounded-full  transition duration-150 ease-in-out hover:bg-primary-accent-200 hover:shadow-lg active:bg-slate-50 active:text-primary active:shadow-md motion-reduce:transition-none">
                         BUY NOW
                     </button>
                 </div>
@@ -54,7 +85,7 @@ const shopDetail = () => {
 
                     <h3 className=" font-normal text-[30px] md:text-[39px] leading-[46px]">
                         We’re working with U.S. based manufacturers to keep our <br />
-                        <h4 className=" lg:text-center">carbon footprint as low as possible.</h4>
+                        <span className=" lg:text-center">carbon footprint as low as possible.</span>
 
                         <br />
                         Each bottle is shipped in a vessel of mycelium and agricultural

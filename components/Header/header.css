@@ -27,15 +27,6 @@
   }
 }
 
-.scrolling-text-two {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 70px;
-  /* animation: name duration timing-function delay iteration-count direction fill-mode; */
-  animation: scroll-left-two 10s linear infinite forwards;
-}
-
 @keyframes slideUpOpen {
   0% {
     transform: translateY(100vh) translateZ(0px);

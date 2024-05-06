@@ -3,13 +3,14 @@ import Image from 'next/image'
 import WINY from "../../public/winykhin.png"
 import ELLIPSE from "../../public/ellipse.png"
 import LOGO from "../../public/logoblack.png"
+import NextLink from "next/link"
 
 const page = () => {
   return (
     <div>
 
       <div className='flex justify-center mt-[26px]'>
-        <div className='w-[820px]'>Home / About</div>
+        <div className='w-[820px]'><NextLink className=' cursor-pointer' href={"/"}>Home</NextLink> / <span>About</span></div>
       </div>
 
       <div className='flex justify-center mt-[85px]'>

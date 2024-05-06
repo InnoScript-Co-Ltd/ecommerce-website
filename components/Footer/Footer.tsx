@@ -7,7 +7,7 @@ import AMEX from "../../public/amex.png"
 import { FaInstagram, FaFacebookF, FaPinterest } from "react-icons/fa";
 
 
-export const Footer = () => {
+const Footer = () => {
     return (
         <div className=" bg-white flex justify-center">
 
@@ -93,3 +93,5 @@ export const Footer = () => {
         </div>
     )
 }
+
+export default Footer;
