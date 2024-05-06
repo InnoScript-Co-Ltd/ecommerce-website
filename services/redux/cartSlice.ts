@@ -6,10 +6,10 @@ interface CounterState {
     cart: Array<any>;
 }
 
-// const cartLocal = localStorage.getItem(keys.CART);
+const cartLocal = typeof window !== 'undefined' && localStorage.getItem(keys.CART);
 
 export const initialState: CounterState = {
-    cart: []
+    cart: cartLocal ? JSON.parse(cartLocal) : []
 };
 
 export const cartSlice = createSlice({

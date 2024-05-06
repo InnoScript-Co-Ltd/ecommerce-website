@@ -97,9 +97,6 @@ const Header = () => {
                   <Image src={Link} alt="link icon" />
                 </li>
                 <li>
-                  <Image src={User} alt="user icon" />
-                </li>
-                <li>
                   <Image src={flag} alt="flag icon" />
                 </li>
                 <li>

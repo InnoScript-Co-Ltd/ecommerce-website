@@ -7,7 +7,7 @@ export const store = () => {
     reducer: {
       counter : counterSlice.reducer,
       cart: cartSlice.reducer
-    }
+    },
   })
 }
 
