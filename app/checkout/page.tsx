@@ -20,7 +20,7 @@ const checkout = () => {
         <>
             <div className=" min-h-screen mt-[100px] grid grid-cols-2">
 
-                <div className=" bg-white px-[90px] shadow-lg border-[#DADADA] border-r-2">
+                <div className=" col-span-2 md:col-span-1 col-start-1 bg-white px-[20px] md:px-[90px] shadow-lg border-[#DADADA] border-r-2">
 
                     <h4 className=" text-[14px] text-[#0000008F] leading-[21px] text-center my-[30px]">Express checkout</h4>
 
@@ -52,15 +52,15 @@ const checkout = () => {
 
                     <Input className=" mt-[20px] focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 " type="email" placeholder="Enter your email" />
 
-                    <CheckboxUi label={'Email me with news and offers'} my={20} />
+                    <CheckboxUi id={'email'} label={'Email me with news and offers'} my={20} />
 
                     <h1 className=" pt-[20px] font-medium text-[24px] leading-[28.8px]">Delivery</h1>
 
                     <SelectUi placeholder="Country/Region" selectLabel="Country/Region" w={'full'} my={20} />
 
-                    <div className=" flex-between gap-5">
-                        <Input className="focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 " placeholder=" First name" />
-                        <Input className="focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 " placeholder="Last name" />
+                    <div className=" grid grid-cols-2 gap-5">
+                        <Input className=" col-span-2 md:col-span-1 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 " placeholder=" First name" />
+                        <Input className=" col-span-2 md:col-span-1 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 " placeholder="Last name" />
                     </div>
 
                     <Input placeholder="Address" className=" mt-[20px]" />
@@ -69,19 +69,21 @@ const checkout = () => {
                         + <span>Add apartment, suite, etc.</span>
                     </p>
 
-                    <div className=" flex-between gap-4">
+                    <div className=" grid grid-cols-3 gap-4">
 
-                        <Input className="focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 " placeholder=" City" />
+                        <Input className="col-span-3 md:col-span-1 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 " placeholder=" City" />
 
-                        <SelectUi placeholder="State" selectLabel="State" w="full" />
+                        <div className=" col-span-3 md:col-sapn-1">
+                            <SelectUi placeholder="State" selectLabel="State" w="full" />
+                        </div>
 
-                        <Input className="focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 " placeholder="PIN code" />
+                        <Input className=" col-span-3 md:col-span-1 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 " placeholder="PIN code" />
 
                     </div>
 
                     <Input placeholder="Phone" className=" mt-[20px]" />
 
-                    <CheckboxUi label="Text me with news and offers" my={20} />
+                    <CheckboxUi id={'text'} label="Text me with news and offers" my={20} />
 
                     <h1 className=" font-medium text-[17px] leading-[20.4px]">Shipping method</h1>
 
@@ -94,7 +96,8 @@ const checkout = () => {
                         <AccordionItem className=" bg-[#0000000B] custom-accordion" value="item-1">
                             <AccordionTrigger className=" border-[#69727B] px-[20px] rounded-tl-[5px] rounded-tr-[5px] border-l-[1px] border-t-[1px] border-r-[1px]">
                                 <div>
-                                    <Checkbox className=" rounded-full mr-2" /> Credit card
+                                    <input type={'checkbox'} className=" rounded-full mr-2 " name="" id="" />
+                                    <span>Credit card</span>
                                 </div>
                                 <div>
                                     <ul className=" flex flex-row gap-3">
@@ -133,7 +136,7 @@ const checkout = () => {
 
 
                 </div>
-                <div className=" bg-checkout-bg">
+                <div className=" col-span-2 md:col-span-1 col-start-2 bg-checkout-bg">
 
                 </div>
 

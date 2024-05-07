@@ -1,0 +1,4 @@
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/whitaxhv/testWinykhin/
+    - /bin/cp -R * $DEPLOYPATH
