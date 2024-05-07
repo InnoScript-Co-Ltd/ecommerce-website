@@ -10,15 +10,15 @@ import flag from "../../public/flag.svg";
 import ShopBag from "../../public/shop_bag.svg"
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RxCross1 } from "react-icons/rx";
-import { Link as scrollLink } from "react-scroll";
-import { useRouter } from 'next/navigation'
+import NextLink from 'next/link';
+import { usePathname } from 'next/navigation'
 
 
-export const Header = () => {
+const Header = () => {
 
   const [mobile, setMobile] = useState(false);
   const [scroll, setScroll] = useState(true);
-  const router = useRouter();
+  const pathName = usePathname();
 
   useEffect(() => {
     const scrollHandler = () => {
@@ -47,13 +47,6 @@ export const Header = () => {
           <span>2 FOR USD30 ON ALL PREMIUM ESSENTIALS</span>
           <span>2 FOR USD30 ON ALL PREMIUM ESSENTIALS</span>
         </div>
-
-        <div className="scrolling-text-two font-bold text-xs leading-3 tracking-wider">
-          <span>2 FOR USD30 ON ALL PREMIUM ESSENTIALS</span>
-          <span>2 FOR USD30 ON ALL PREMIUM ESSENTIALS</span>
-          <span>2 FOR USD30 ON ALL PREMIUM ESSENTIALS</span>
-          <span>2 FOR USD30 ON ALL PREMIUM ESSENTIALS</span>
-        </div>
       </div>
 
       {/* for upper screen */}
@@ -65,12 +58,18 @@ export const Header = () => {
             <div className=' w-[300px] flex justify-between items-center'>
 
               <ul className=' flex justify-start items-center gap-7 font-bold text-[16px] leading-3'>
-                <li className=' cursor-pointer' >New In</li>
-                <li className=' cursor-pointer' onClick={() => router.push('/shop')}>Shop</li>
+                <li>
+                  <NextLink className={` cursor-pointer ${pathName === '/' ? 'link-active' : ''}`} href={'/'} >New In</NextLink>
+                </li>
+                <li>
+                  <NextLink className={` cursor-pointer ${pathName === '/shop' ? 'link-active' : ''}`} href={'/shop'} >Shop</NextLink>
+                </li>
               </ul>
 
-              <div onClick={() => router.replace('/')} className=' translate-x-10'>
-                <Image src={Logo} alt="WinKhin Logo" />
+              <div className=' translate-x-10'>
+                <NextLink href={'/'}>
+                  <Image src={Logo} alt="WinKhin Logo" />
+                </NextLink>
               </div>
 
             </div>
@@ -80,27 +79,30 @@ export const Header = () => {
           <div className=' flex justify-end items-center'>
 
             <ul className=' flex justify-start items-center gap-7 font-bold text-[16px] leading-3'>
-              <li className=' cursor-pointer' onClick={() => router.push('/about')}>About</li>
-              <li className=' cursor-pointer'>Contact Us</li>
+              <li>
+                <NextLink className={` cursor-pointer ${pathName === '/about' ? 'link-active' : ''}`} href={'/about'}>About</NextLink>
+              </li>
+              <li>
+                <NextLink className={` cursor-pointer ${pathName === '/contact-us' ? 'link-active' : ''}`} href={'/contact-us'}>Contact Us</NextLink>
+              </li>
             </ul>
 
             <div className=' w-[350px] flex items-center justify-end'>
 
               <ul className=' pr-10 flex justify-start items-center gap-5 font-bold text-[16px] leading-3'>
                 <li>
-                  <Image src={Search} alt="Search icon" />
+                  <NextLink href={'/search'} ><Image src={Search} alt="Search icon" /></NextLink>
                 </li>
                 <li>
                   <Image src={Link} alt="link icon" />
                 </li>
                 <li>
-                  <Image src={User} alt="user icon" />
-                </li>
-                <li>
                   <Image src={flag} alt="flag icon" />
                 </li>
                 <li>
-                  <Image src={ShopBag} alt="shop bag icon" />
+                  <NextLink href={'/cart'}>
+                    <Image src={ShopBag} alt="shop bag icon" />
+                  </NextLink>
                 </li>
               </ul>
 
@@ -114,11 +116,13 @@ export const Header = () => {
       {/* for mobile screen */}
       <div className={`${scroll ? '' : ' animate-slideDown'} lg:hidden w-full h-[82px] bg-primary flex-between px-[20px] transition duration-1000 ease-in-out`}>
 
-        <div  onClick={() => router.replace('/')}>
-          <Image src={Logo} alt="WinKhin Logo" />
+        <div>
+          <NextLink href={'/'}>
+            <Image src={Logo} alt="WinKhin Logo" />
+          </NextLink>
         </div>
 
-        <div onClick={() =>  setMobile(!mobile)} className=' text-white cursor-pointer'>
+        <div onClick={() => setMobile(!mobile)} className=' text-white cursor-pointer'>
           <GiHamburgerMenu size={25} />
         </div>
 
@@ -132,28 +136,28 @@ export const Header = () => {
 
             <ul className=' px-[30px] pt-[50px] text-white font-bold flex flex-col gap-3'>
 
-              <li className=' cursor-pointer hover:text-primary transition duration-300 ease-in-out'>
-                <p>
+              <li className={` cursor-pointer text-primary ${pathName === '/' ? ' underline' : ''}`}>
+                <NextLink href={'/'}>
                   New In
-                </p>
+                </NextLink>
               </li>
 
-              <li onClick={() => router.push('/shop')} className=' cursor-pointer hover:text-primary transition duration-300 ease-in-out'>
-                <p>
+              <li className={` cursor-pointer text-primary ${pathName === '/shop' ? ' underline' : ''}`}>
+                <NextLink href={"/shop"}>
                   Shop
-                </p>
+                </NextLink>
               </li>
 
-              <li className=' cursor-pointer hover:text-primary transition duration-300 ease-in-out'>
-                <p>
+              <li className={` cursor-pointer text-primary ${pathName === '/about' ? ' underline' : ''}`}>
+                <NextLink href={'/about'}>
                   About
-                </p>
+                </NextLink>
               </li>
 
-              <li className=' cursor-pointer hover:text-primary transition duration-300 ease-in-out'>
-                <p>
+              <li className=' cursor-pointer text-primary transition duration-300 ease-in-out'>
+                <NextLink href={'/contact-us'}>
                   Contact Us
-                </p>
+                </NextLink>
               </li>
 
             </ul>
@@ -168,3 +172,5 @@ export const Header = () => {
     </>
   )
 }
+
+export default Header;

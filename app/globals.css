@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer components {
+  .container {
+    @apply px-[30px] md:px-[200px] mt-[50px];
+  }
   .flex-center {
     @apply flex items-center justify-center
   }
@@ -17,6 +20,9 @@
   }
   .input {
     @apply focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0
+  }
+  .link-active {
+    @apply border-[1px] border-white px-[20px] py-[10px] rounded-[25px];
   }
 }
 
