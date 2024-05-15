@@ -1,24 +1,73 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import "./header.css"
 import Image from 'next/image'
 import Logo from "../../public/logo.svg"
 import Search from "../../public/search.svg"
 import Link from "../../public/link.svg";
-import User from "../../public/user.svg";
-import flag from "../../public/flag.svg";
 import ShopBag from "../../public/shop_bag.svg"
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RxCross1 } from "react-icons/rx";
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation'
+import { GlobeIcon } from '@radix-ui/react-icons'
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { baseURL, endpoints } from '@/constant/endpoints'
+import { useAppDispatch, useAppSelector } from '@/helper/hook'
+import { keys } from '@/constant/key'
+import { addExchange } from '@/services/redux/exchangeSlice'
+
+interface EXCHANGE {
+  id: number;
+  name: string;
+  rate: string | number
+}
 
 
 const Header = () => {
 
   const [mobile, setMobile] = useState(false);
   const [scroll, setScroll] = useState(true);
+  const [exchange, setExchange] = useState([]);
+  const [checkedExchange, setCheckedExchange] = useState<EXCHANGE>({
+    id: 0,
+    name: "",
+    rate: 0
+  });
   const pathName = usePathname();
+  const dispatch = useAppDispatch();
+  const cartLists = useAppSelector(state => state.cart);
+
+  const fetchExchange = useCallback(async () => {
+    const response = await fetch(`${baseURL}${endpoints.exchange}`);
+    const data: any = await response.json();
+
+    if (data.data) {
+      setExchange(data.data);
+    }
+  }, [])
+
+
+
+  useEffect(() => {
+    fetchExchange()
+    if (typeof window !== 'undefined') {
+      const exchangeLocal = localStorage.getItem(keys.EXCHANGE);
+      if (exchangeLocal) {
+        const parsedExchange = JSON.parse(exchangeLocal);
+        setCheckedExchange(parsedExchange);
+        // dispatch(addExchange(parsedExchange));
+      }
+    }
+  }, [fetchExchange])
 
   useEffect(() => {
     const scrollHandler = () => {
@@ -37,17 +86,18 @@ const Header = () => {
     };
   }, []);
 
+
   return (
     <>
       {/* top banner animation */}
-      <div className="top-bar h-[24px]">
+      {/* <div className="top-bar h-[24px]">
         <div className="scrolling-text-one font-bold text-xs leading-3 tracking-wider">
           <span>2 FOR USD30 ON ALL PREMIUM ESSENTIALS</span>
           <span>2 FOR USD30 ON ALL PREMIUM ESSENTIALS</span>
           <span>2 FOR USD30 ON ALL PREMIUM ESSENTIALS</span>
           <span>2 FOR USD30 ON ALL PREMIUM ESSENTIALS</span>
         </div>
-      </div>
+      </div> */}
 
       {/* for upper screen */}
       <div className={` ${scroll ? '' : 'animate-slideDown'} hidden lg:block w-full h-[82px] bg-primary text-white`}>
@@ -59,10 +109,10 @@ const Header = () => {
 
               <ul className=' flex justify-start items-center gap-7 font-bold text-[16px] leading-3'>
                 <li>
-                  <NextLink className={` cursor-pointer ${pathName === '/' ? 'link-active' : ''}`} href={'/'} >New In</NextLink>
+                  <NextLink className={` cursor-pointer ${pathName === '/man' ? 'link-active' : ''}`} href={'/man'} >Men</NextLink>
                 </li>
                 <li>
-                  <NextLink className={` cursor-pointer ${pathName === '/shop' ? 'link-active' : ''}`} href={'/shop'} >Shop</NextLink>
+                  <NextLink className={` cursor-pointer ${pathName === '/woman' ? 'link-active' : ''}`} href={'/woman'} >Women</NextLink>
                 </li>
               </ul>
 
@@ -97,9 +147,42 @@ const Header = () => {
                   <Image src={Link} alt="link icon" />
                 </li>
                 <li>
-                  <Image src={flag} alt="flag icon" />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild className=' cursor-pointer'>
+                      <GlobeIcon width={'25px'} height={'25px'} />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuLabel>Rate</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {exchange.length > 0 ? exchange?.map((exchange: any, index) => {
+                        const isChecked = checkedExchange?.name === exchange.name;
+                        return (
+                          <DropdownMenuCheckboxItem
+                            checked={isChecked}
+                            onCheckedChange={() => {
+                              localStorage.setItem(keys.EXCHANGE, JSON.stringify(exchange));
+                              dispatch(addExchange(exchange))
+                            }}
+                            key={`exchnage_${index}`}
+                          >
+                            {exchange.name}
+                          </DropdownMenuCheckboxItem>
+                        )
+                      }) : (
+                        <p>No avaliable rate</p>
+                      )}
+
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </li>
-                <li>
+                <li className=' relative'>
+                  {
+                    cartLists.cart.length > 0 && (
+                      <p className=' absolute top-0 -right-2 w-[15px] h-[15px] text-[12px] font-bold bg-red-500 rounded-full flex items-center justify-center'>
+                        {cartLists.cart.length}
+                      </p>
+                    )
+                  }
                   <NextLink href={'/cart'}>
                     <Image src={ShopBag} alt="shop bag icon" />
                   </NextLink>
@@ -136,15 +219,15 @@ const Header = () => {
 
             <ul className=' px-[30px] pt-[50px] text-white font-bold flex flex-col gap-3'>
 
-              <li className={` cursor-pointer text-primary ${pathName === '/' ? ' underline' : ''}`}>
-                <NextLink href={'/'}>
-                  New In
+              <li className={` cursor-pointer text-primary ${pathName === '/man' ? ' underline' : ''}`}>
+                <NextLink href={'/man'}>
+                  Man
                 </NextLink>
               </li>
 
-              <li className={` cursor-pointer text-primary ${pathName === '/shop' ? ' underline' : ''}`}>
-                <NextLink href={"/shop"}>
-                  Shop
+              <li className={` cursor-pointer text-primary ${pathName === '/woman' ? ' underline' : ''}`}>
+                <NextLink href={"/woman"}>
+                  Woman
                 </NextLink>
               </li>
 
