@@ -6,24 +6,25 @@ interface CounterState {
     cart: Array<any>;
 }
 
-const cartLocal = typeof window !== 'undefined' && localStorage.getItem(keys.CART);
+const cartLocal = typeof window !== 'undefined' && typeof document !== 'undefined' && localStorage.getItem(keys.CART);
 
 export const initialState: CounterState = {
-    cart: cartLocal ? JSON.parse(cartLocal) : []
+    cart: cartLocal ? [JSON.parse(cartLocal!)] : []
 };
 
 export const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        addCart: (state, action : PayloadAction<any> ) => {
+        addCart: (state, action: PayloadAction<any>) => {
             // Redux Toolkit allows us to write "mutating" logic in reducers. It
             // doesn't actually mutate the state because it uses the Immer library,
             // which detects changes to a "draft state" and produces a brand new
             // immutable state based off those changes.
             // Also, no return statement is required from these functions.
-
-            state.cart = action.payload;
+            if(typeof window !== 'undefined' && typeof state.cart !== 'string'){
+                state.cart = [...state.cart, action.payload]; // Using spread operator to create a new array
+            }
         },
         // decrement: (state) => {
         //     state.value -= 1

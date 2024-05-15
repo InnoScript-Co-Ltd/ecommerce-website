@@ -6,21 +6,27 @@
   .container {
     @apply px-[30px] md:px-[200px] mt-[50px];
   }
+
   .flex-center {
     @apply flex items-center justify-center
   }
+
   .flex-between {
     @apply flex items-center justify-between
   }
+
   .flex-start {
     @apply flex items-center justify-start
   }
+
   .flex-end {
     @apply flex items-center justify-end
   }
+
   .input {
     @apply focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0
   }
+
   .link-active {
     @apply border-[1px] border-white px-[20px] py-[10px] rounded-[25px];
   }
@@ -94,6 +100,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
