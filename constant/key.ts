@@ -1,3 +1,4 @@
 export const keys = {
-    CART : 'CART'
+    CART : 'CART',
+    EXCHANGE : "EXCHANGE"
 }

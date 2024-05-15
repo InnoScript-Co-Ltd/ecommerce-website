@@ -11,11 +11,11 @@ const Footer = () => {
     return (
         <div className=" bg-white flex justify-center">
 
-            <div className=" w-full  md:w-[800px] lg:w-[1000px] px-[20px] md:px-0 mt-[70px] pb-[50px]">
+            <div className=" w-full  md:w-[800px] lg:w-[1000px] px-[20px] lg:px-0 mt-[70px] pb-[50px]">
 
                 <div className=" w-full h-[1px] bg-gray opacity-[15%]"></div>
 
-                <div className=" w-full grid grid-rows-3 md:grid-rows-none lg:grid-cols-3 gap-5 md:gap-0 mt-[20px]">
+                <div className=" w-full grid grid-rows-3 md:grid-rows-none lg:grid-cols-3 gap-5 lg:gap-0 mt-[20px]">
 
                     <div>
                         <h1 className=" text-[16px] font-bold leading-[19px] text-gray">Payment Method</h1>

@@ -1,6 +1,7 @@
 export const paths = {
     newIn : '/',
-    shop : '/shop',
+    woman : '/woman',
+    man: '/man',
     shopDetail : '/shop/detail',
     search : '/search',
     lisiting : '/lisiting',
