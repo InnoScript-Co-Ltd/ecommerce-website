@@ -1,15 +1,11 @@
 'use client'
+import Loading from "@/app/loading"
 import { baseURL, endpoints } from "@/constant/endpoints"
 import { paths } from "@/constant/paths"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
-
-interface FOOTER_IMAGES {
-    id: number,
-    image: string,
-}
+import { Suspense, useCallback, useEffect, useState } from "react"
 
 interface PRODUCT_DETAIL {
     id: number,
@@ -53,19 +49,24 @@ const shopDetail = ({
     }
 }) => {
 
+    const [loading, setLoading] = useState<boolean>(false);
     const [productDetail, setProductDetail] = useState<PRODUCT_DETAIL | null>();
     const router = useRouter();
 
     const getProductDetail = useCallback(async () => {
 
         if (searchParams.productIds) {
+            setLoading(true);
             const response = await fetch(`${baseURL}${endpoints.productDetail}/${searchParams.productIds}`);
             const data = await response.json();
             if (data.data[0]) {
+                setLoading(false);
                 setProductDetail(data.data[0]);
             } else {
+                setLoading(false);
                 setProductDetail(null)
             }
+            setLoading(false);
         }
 
     }, [searchParams.productIds])
@@ -78,23 +79,31 @@ const shopDetail = ({
 
 
     return (
-        <>
+        <Suspense fallback={<Loading />}>
+
+            {loading && (
+                <Loading />
+            )}
 
             {
-                productDetail === null ? (
+                loading === false && productDetail === null ? (
                     <div className=" w-full h-screen flex items-center justify-center font-bold">
                     No product Detail found
                     </div>
                 ) : (
                     <>
-                        <div className=" w-full h-[700px] relative overflow-hidden">
+                        <div className=" w-full h-full relative overflow-hidden">
 
                             <Image
                                 src={`${endpoints.image}/${productDetail?.header_bg.image && productDetail?.header_bg.image}`}
                                 alt={`product_detail_header_bg`}
-                                fill={true}
+                                width={0}
+                                height={0}
+                                layout="responsive"
+                                objectFit="cover"
+                                className=" w-full h-full"
                                 quality="100"
-                                priority={true}
+                                loading={"lazy"}
                             />
 
                             <div className=" w-[300px] md:w-[600px] text-white absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]">
@@ -123,7 +132,7 @@ const shopDetail = ({
                             <div className=" w-full lg:w-[40%] text-white">
 
                                 <div
-                                    className=" font-normal text-[20px] leading-[35px] md:leading-[40px]"
+                                    className=" text-white font-normal text-[20px] leading-[35px] md:leading-[40px]"
                                     dangerouslySetInnerHTML={{ __html: productDetail! && productDetail?.header_content_description }}
                                 />
 
@@ -132,14 +141,18 @@ const shopDetail = ({
 
                         </div>
 
-                        <div className=" w-full h-[775px] relative overflow-hidden">
+                        <div className=" w-full h-full relative overflow-hidden">
 
                             <Image
                                 src={`${endpoints.image}/${productDetail?.showcase_bg.image}`}
                                 alt={`product_detail_showcase_bg`}
-                                fill={true}
+                                width={0}
+                                height={0}
+                                layout="responsive"
+                                objectFit="cover"
+                                className=" w-full h-full"
                                 quality="100"
-                                priority={true}
+                                loading={"lazy"}
                             />
 
                             <div className=" w-[300px] md:w-[700px] lg:w-[1100px] h-auto lg:h-[400px] px-[50px] py-[30px] text-white absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]">
@@ -227,7 +240,7 @@ const shopDetail = ({
                 )
             }
 
-        </>
+        </Suspense>
     )
 
 }
