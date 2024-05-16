@@ -1,10 +1,11 @@
 'use client'
+import Loading from "@/app/loading"
 import { baseURL, endpoints } from "@/constant/endpoints"
 import { paths } from "@/constant/paths"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
+import { Suspense, useCallback, useEffect, useState } from "react"
 
 interface FOOTER_IMAGES {
     id: number,
@@ -53,19 +54,24 @@ const shopDetail = ({
     }
 }) => {
 
+    const [loading, setLoading] = useState<boolean>(false);
     const [productDetail, setProductDetail] = useState<PRODUCT_DETAIL | null>();
     const router = useRouter();
 
     const getProductDetail = useCallback(async () => {
 
         if (searchParams.productIds) {
+            setLoading(true);
             const response = await fetch(`${baseURL}${endpoints.productDetail}/${searchParams.productIds}`);
             const data = await response.json();
             if (data.data[0]) {
                 setProductDetail(data.data[0]);
+                setLoading(false);
             } else {
-                setProductDetail(null)
+                setProductDetail(null);
+                setLoading(false);
             }
+            setLoading(false);
         }
 
     }, [searchParams.productIds])
@@ -78,31 +84,39 @@ const shopDetail = ({
 
 
     return (
-        <>
+        <Suspense fallback={<Loading />}>
+
+            {loading && (
+                <Loading />
+            )}
 
             {
-                productDetail === null ? (
+                loading === false && productDetail === null ? (
                     <div className=" w-full h-screen flex items-center justify-center font-bold">
-                    No product Detail found
+                        No product Detail found
                     </div>
                 ) : (
                     <>
-                        <div className=" w-full h-[700px] relative overflow-hidden">
+                        <div className=" w-full h-full relative overflow-hidden">
 
                             <Image
                                 src={`${endpoints.image}/${productDetail?.header_bg.image && productDetail?.header_bg.image}`}
                                 alt={`product_detail_header_bg`}
-                                fill={true}
+                                width={0}
+                                height={0}
+                                layout="responsive"
+                                objectFit="cover"
+                                className=" w-full h-full"
                                 quality="100"
-                                priority={true}
+                                loading={"lazy"}
                             />
 
                             <div className=" w-[300px] md:w-[600px] text-white absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]">
 
-                                <p className=" text-center font-normal text-[20px] leading-[25px] md:leading-[19px]">{productDetail?.header_title}</p>
+                                <p className=" text-center font-normal text-[14px] leading-[25px] md:leading-[19px]">{productDetail?.header_title}</p>
 
                                 <div
-                                    className=" text-center font-bold text-[30px] md:text-[49.9px] leading-[40px] md:leading-[59.87px]"
+                                    className=" text-center font-bold text-[18px] md:text-[49.9px] md:leading-[59.87px]"
                                     dangerouslySetInnerHTML={{ __html: productDetail! && productDetail?.header_description }}
                                 />
 
@@ -115,7 +129,7 @@ const shopDetail = ({
                         }} className=" w-full h-auto px-[50px] py-[30px] lg:ps-0 flex flex-col lg:flex-row gap-3 lg:flex-center">
 
                             <div className=" w-full lg:w-[40%] text-white">
-                                <h1 className=" font-normal text-[40px] md:text-[49.9px] leading-[40px] md:leading-[59px]">
+                                <h1 className=" font-normal text-[20px] md:text-[49.9px] md:leading-[59px]">
                                     {productDetail?.header_content_title}
                                 </h1>
                             </div>
@@ -123,7 +137,7 @@ const shopDetail = ({
                             <div className=" w-full lg:w-[40%] text-white">
 
                                 <div
-                                    className=" font-normal text-[20px] leading-[35px] md:leading-[40px]"
+                                    className=" font-normal text-[16px] md:text-[20px] leading-[23px] md:leading-[40px]"
                                     dangerouslySetInnerHTML={{ __html: productDetail! && productDetail?.header_content_description }}
                                 />
 
@@ -132,24 +146,28 @@ const shopDetail = ({
 
                         </div>
 
-                        <div className=" w-full h-[775px] relative overflow-hidden">
+                        <div className=" w-full h-full relative overflow-hidden">
 
                             <Image
                                 src={`${endpoints.image}/${productDetail?.showcase_bg.image}`}
                                 alt={`product_detail_showcase_bg`}
-                                fill={true}
+                                width={0}
+                                height={0}
+                                layout="responsive"
+                                objectFit="cover"
+                                className=" w-full h-full"
                                 quality="100"
-                                priority={true}
+                                loading={"lazy"}
                             />
 
-                            <div className=" w-[300px] md:w-[700px] lg:w-[1100px] h-auto lg:h-[400px] px-[50px] py-[30px] text-white absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]">
+                            <div className=" w-[300px] md:w-[700px] lg:w-[1100px] h-auto lg:h-[400px] px-[10px] md:px-[50px] py-[30px] text-white absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]">
 
-                                <h3 className=" font-normal text-[30px] text-center md:text-[39px] leading-[35px] md:leading-[46px]">
+                                <h3 className=" font-normal text-[14px] text-center md:text-[39px] md:leading-[46px]">
                                     {productDetail?.showcase_content}
                                 </h3>
 
                                 <div
-                                    className=" text-center text-[20px] md:text-[13px] mt-[50px] font-normal leading-[30px] md:leading-[15px]"
+                                    className=" text-center text-[13px] md:text-[13px] mt-[50px] font-normal md:leading-[15px]"
                                     dangerouslySetInnerHTML={{ __html: productDetail! && productDetail?.showcase_description }}
                                 />
 
@@ -163,12 +181,12 @@ const shopDetail = ({
 
                             <div className=" w-[380px] md:w-[600px] px-[30px] py-[30px]">
 
-                                <h1 className=" font-normal text-[39px] leading-[46px]">
+                                <h1 className=" font-normal text-[20px] md:text-[39px] leading-[30px] md:leading-[46px]">
                                     {productDetail?.product_detail_title}
                                 </h1>
 
                                 <div
-                                    className=" font-normal text-[20px] leading-[25px] md:leading-[40px] mt-[30px]"
+                                    className=" font-normal text-[18px] md:text-[20px] leading-[30px] md:leading-[40px] mt-[30px]"
                                     dangerouslySetInnerHTML={{ __html: productDetail! && productDetail?.product_detail_content }}
                                 />
 
@@ -206,28 +224,32 @@ const shopDetail = ({
 
                         </div>
 
-                        <div className=" w-full flex items-center justify-center py-[20px]">
-                            <Link
-                                href={{
-                                    pathname: `/lisiting`,
-                                    query: {
-                                        item: productDetail?.item_id
-                                    }
-                                }}
-                            >
-                                <button
-                                    onClick={() => router.push(paths.lisiting)}
-                                    className=" w-[117px] h-[44px] font-bold text-[16px] leading-[19px] bg-black text-white rounded-full  transition duration-150 ease-in-out hover:bg-primary-accent-200 hover:shadow-lg active:bg-slate-50 active:text-primary active:shadow-md motion-reduce:transition-none">
-                                    BUY NOW
-                                </button>
-                            </Link>
-                        </div>
+                        {
+                            loading === false && (
+                                <div className=" w-full flex items-center justify-center py-[20px]">
+                                    <Link
+                                        href={{
+                                            pathname: `/lisiting`,
+                                            query: {
+                                                item: productDetail?.item_id
+                                            }
+                                        }}
+                                    >
+                                        <button
+                                            onClick={() => router.push(paths.lisiting)}
+                                            className=" w-[117px] h-[44px] font-bold text-[16px] leading-[19px] bg-black text-white rounded-full  transition duration-150 ease-in-out hover:bg-primary-accent-200 hover:shadow-lg active:bg-slate-50 active:text-primary active:shadow-md motion-reduce:transition-none">
+                                            BUY NOW
+                                        </button>
+                                    </Link>
+                                </div>
+                            )
+                        }
 
                     </>
                 )
             }
 
-        </>
+        </Suspense>
     )
 
 }

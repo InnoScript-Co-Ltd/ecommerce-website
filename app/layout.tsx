@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Inter, Roboto_Condensed } from "next/font/google";
 import "./globals.css";
-// import { Header } from "@/components/Header/Header";
-// import { Footer } from "@/components/Footer/Footer";
 import dynamic from "next/dynamic";
-import { Provider } from "react-redux";
-import {store} from "@/services/redux/store";
 import StoreProvider from "@/components/Provider/StoreProvider";
+import { Suspense } from "react";
+import Loading from "./loading";
+import { Toaster } from "@/components/ui/toaster"
+
 
 const Header = dynamic(() => import('@/components/Header/Header'), { ssr: false });
 const Footer = dynamic(() => import("@/components/Footer/Footer"), { ssr: false });
@@ -30,8 +30,11 @@ export default function RootLayout({
         <StoreProvider
           cart={[]}
         >
+          <Toaster />
           <Header />
-          {children}
+          <Suspense fallback={<Loading />}>
+            {children}
+          </Suspense>
           <Footer />
         </StoreProvider>
       </body>

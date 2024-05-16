@@ -1,15 +1,11 @@
 'use client'
 import { keys } from "@/constant/key";
 import { useAppDispatch, useAppSelector } from "@/helper/hook"
-import { addCart } from "@/services/redux/cartSlice";
+import { addCart, addCartCount, reduceCartCount } from "@/services/redux/cartSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import ListingOne from "@/public/listing_1.jpeg"
-import ListingTwo from "@/public/listing_2.jpeg"
-import ListingThree from "@/public/listing_3.jpeg"
-import ListingFour from "@/public/listing_4.jpeg"
-import ListingSlider from "@/public/listing_slider.jpeg"
-import { CheckIcon, HeartIcon } from "@radix-ui/react-icons";
+import { HeartIcon } from "@radix-ui/react-icons";
+import { FaCheck } from "react-icons/fa6";
 import ruler from "@/public/ruler-vertical.svg fill.svg";
 
 //carousel shadcn ui
@@ -22,24 +18,9 @@ import {
 } from "@/components/ui/carousel"
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
-import { Button } from "@/components/ui/button";
-import { RootState } from "@/services/redux/store";
-import { addExchange, exchangeState } from "@/services/redux/exchangeSlice";
+import { addExchange } from "@/services/redux/exchangeSlice";
 import { baseURL, endpoints } from "@/constant/endpoints";
-
-const cartLists = [
-  {
-    title: 'Lorem ipsum dolor sit amet consectetur.',
-    price: 'USD .300.00',
-    desc: 'UK S (6-8) | EU 28 | US-4',
-    item_count: 1
-  }
-];
-
-interface DETAIL_IMAGE {
-  id: number;
-  image: string;
-}
+import Loading from "../loading";
 
 interface ITEM {
   id: number,
@@ -85,6 +66,7 @@ const page = ({
   });
   const [item, setItem] = useState<ITEM>();
 
+  const cartLists = useAppSelector(state => state.cart);
   const dispatch = useAppDispatch();
   const exchange = useAppSelector((state) => state.exchnage);
   const router = useRouter();
@@ -108,18 +90,17 @@ const page = ({
   const addToCart = () => {
 
     const cart = {
+      id: item?.id,
       title: item?.title,
       price: item?.sell_price,
-      promotionPrice: item?.promotion_price, 
+      promotionPrice: item?.promotion_price,
       desc: item?.product_detail_content,
+      image: item?.detail_images,
       choose_count: choose.count,
       choose_color: choose.color,
       choose_size: choose.size
     }
-
-    localStorage.setItem(keys.CART, JSON.stringify(cart));
     dispatch(addCart(cart));
-    router.push('/cart');
   }
 
   useEffect(() => {
@@ -162,21 +143,38 @@ const page = ({
     }
   }, [item])
 
-  const testValue = 39.00;
-
-  // console.log(item?.color.length > 0 && JSON.parse(item?.color).split(','));
-  console.log(item);
-
+  useEffect(() => {
+    if(cartLists.cart.length > 0 && item){
+      cartLists.cart.filter((cart : any) => {
+        
+        if(cart?.id === item?.id){
+          setSelectColor(cart.choose_color);
+          setSelectSize(cart.choose_size);
+          setChoose({
+            ...choose,
+            color: cart.choose_color,
+            size : cart.choose_size,
+            count : cart.choose_count
+          })
+        }
+      })
+    }
+  }, [cartLists, item])
+  
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loading />}>
+
+      {loading && (
+        <Loading />
+      )}
 
       <div className=" grid grid-cols-5 px-[10px] lg:px-[50px] mt-[50px]">
         <div className="col-span-5 md:col-span-1 col-start-1">
 
           <div className="w-full h-full flex flex-col relative">
             {
-              item?.detail_images?.slice(0, 4).map((image, index) => {
+              loading === false && item?.detail_images?.slice(0, 4).map((image, index) => {
                 return (
                   <Image
                     key={index}
@@ -236,8 +234,8 @@ const page = ({
           <h1 className=" text-2xl font-bold">{item?.title}</h1>
           {mounted && (
             <div className=" flex items-center justify-start gap-3 my-3">
-              <p className=" line-through font-bold text-xl">${exchange.exchange.rate ? (item?.sell_price * exchange.exchange.rate) : item?.sell_price}</p>
-              <span className=" text-red-500 font-bold text-xl">{exchange.exchange.rate ? (item?.promotion_price * exchange.exchange.rate) : item?.promotion_price}</span>
+              <p className=" line-through font-bold text-xl text-grey">${exchange.exchange.rate ? (item?.sell_price * exchange.exchange.rate) : item?.sell_price}</p>
+              <span className=" text-red-500 font-bold text-xl">${exchange.exchange.rate ? (item?.promotion_price * exchange.exchange.rate) : item?.promotion_price}</span>
             </div>
           )}
           {/* color  */}
@@ -245,6 +243,7 @@ const page = ({
           <div className=" flex flex-wrap items-center justify-start gap-3">
             {
               item?.color.length > 0 && JSON.parse(item?.color).split(',')?.map((color: string, index: number) => {
+                
                 return (
                   <div
                     key={`color_${index}`}
@@ -258,11 +257,14 @@ const page = ({
                       justifyContent: 'center',
                       alignItems: 'center'
                     }}
-                    onClick={() => setSelectColor(color)}
-                    className=" active:scale-110 active:shadow transition-all duration-300 ease-in"
+                    onClick={() => {
+                      setSelectColor(color)
+                      setChoose({...choose, color: color})
+                    }}
+                    className=" font-bold active:scale-110 active:shadow transition-all duration-300 ease-in"
                   >
                     {color === selectColor && (
-                      <CheckIcon fontSize={20} />
+                      <FaCheck fontSize={20} />
                     )}
                   </div>
                 )
@@ -279,7 +281,10 @@ const page = ({
                 return (
                   <div
                     key={`size_${index}`}
-                    onClick={() => setSelectSize(size)}
+                    onClick={() => {
+                      setSelectSize(size)
+                      setChoose({...choose, size : size})
+                    }}
                     className={`${size === selectSize ? ' bg-black text-white font-bold shadow' : ''} w-[40px] h-[40px] border border-black rounded-sm uppercase flex items-center justify-center transition-all duration-300 ease-in`}
                   >
                     {size}
@@ -306,8 +311,19 @@ const page = ({
             <div className=" flex items-center justify-start gap-2">
               <p>{choose.count}</p>
               <div className=" flex flex-col items-center justify-center gap-1">
-                <MdKeyboardArrowUp onClick={addCount} className=" cursor-pointer active:text-primary active:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
-                <MdKeyboardArrowDown onClick={reduceCount} className=" cursor-pointer active:text-primary active:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
+                <MdKeyboardArrowUp onClick={() => {
+                  if(cartLists.cart.length > 0){
+                    dispatch(addCartCount({id: item?.id}))
+                  }else {
+                    addCount();
+                  }
+        
+                }} className=" cursor-pointer active:text-primary active:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
+                <MdKeyboardArrowDown onClick={() => {
+                  if(cartLists.cart.length > 0){
+                    dispatch(reduceCartCount({id: item?.id}))
+                  }
+                }} className=" cursor-pointer active:text-primary active:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
               </div>
             </div>
 
@@ -324,7 +340,7 @@ const page = ({
 
           </div>
 
-          <button className=" w-full lg:w-[300px] h-[50px] mt-3 active:scale-105 active:shadow-lg border border-black flex items-center justify-center transition-all duration-300 ease-in">
+          <button onClick={() => router.push('/checkout')} className=" w-full lg:w-[300px] h-[50px] mt-3 active:scale-105 active:shadow-lg border border-black flex items-center justify-center transition-all duration-300 ease-in">
             Checkout Now
           </button>
 
@@ -336,21 +352,22 @@ const page = ({
 
       <div>
         <h1 className=" text-center font-bold text-xl my-[50px]">Similar Product</h1>
-        <div className="w-full h-auto relative">
+        <div className="w-full h-full relative">
           <Image
             src={`${endpoints.image}/${item?.product.bg_image.image}`}
             alt="detail image"
-            priority={true}
             width={0}
             height={0}
+            layout="responsive"
             objectFit="cover"
-            unoptimized={true}
-            className=" w-full h-[400px]"
+            className=" w-full h-full"
+            quality="100"
+            loading={"lazy"}
           />
 
           <div className=" absolute top-[50%] left-[5%] -translate-y-[50%] text-white">
-            <h1 className=" text-2xl font-bold">{item?.product.title}</h1>
-            <p className=" text-base font-semibold leading-10">{item?.product.description}</p>
+            <h1 className=" text-[20px] md:text-[45px] font-bold leading-3 md:leading-10">{item?.product.title}</h1>
+            <p className=" text-[18px] md:text-[30px] font-semibold leading-5 md:leading-[30px] pt-3">{item?.product.description}</p>
             <button
               className=" mt-[30px] flex items-center justify-start gap-3 font-bold text-[20px] leading-[24px] transition duration-150 ease-in-out hover:bg-primary-accent-200 hover:shadow-lg active:text-primary active:shadow-md motion-reduce:transition-none"
             >
