@@ -2,22 +2,50 @@
 import { baseURL, endpoints } from "@/constant/endpoints";
 import { FormEvent, useRef, useState } from "react";
 import { MdOutlineEmail } from "react-icons/md";
-
+import { useToast } from "@/components/ui/use-toast"
 
 const page = () => {
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const form = useRef<any>();
+  const { toast } = useToast();
 
   const submitContact = async (e: FormEvent) => {
     e.preventDefault();
     const formData = new FormData(form.current);
     setLoading(true);
-    const response = await fetch(`${baseURL}${endpoints.contact}`, {
-      method: 'POST',
-      body : formData
-    });
-    const data = await response.json();
+
+    try {
+      const response = await fetch(`${baseURL}${endpoints.contact}`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await response.json();
+
+      if (typeof data.data.subject !== 'string') {
+        toast({
+          variant: "destructive",
+          title: 'Validation error you need to fail all the input!',
+        });
+        
+      }else {
+        toast({
+          title: 'Your message is successfully sent!',
+        });
+        form.current.reset(); // Clear the form
+      }
+    } catch (error : any) {
+      console.log(error);
+      
+      toast({
+        variant: "destructive",
+        title: error.message,
+      });
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+
 
   }
 
@@ -29,15 +57,15 @@ const page = () => {
 
           <form ref={form} onSubmit={submitContact} action="" className=" mt-[20px]">
 
-            <input type="text" className=" w-full px-[5px] py-[10px] border-b-[1px] border-[#757575] outline-none" placeholder="Subject" name="subject" />
+            <input disabled={loading} type="text" className=" w-full px-[5px] py-[10px] border-b-[1px] border-[#757575] outline-none" placeholder="Subject" name="subject" />
 
-            <input type="text" className=" w-full px-[5px] py-[10px] border-b-[1px] border-[#757575] outline-none my-[15px]" placeholder="Name" name="name" />
+            <input disabled={loading} type="text" className=" w-full px-[5px] py-[10px] border-b-[1px] border-[#757575] outline-none my-[15px]" placeholder="Name" name="name" />
 
-            <input type="email" className=" w-full px-[5px] py-[10px] border-b-[1px] border-[#757575] outline-none" placeholder="Email" name="email" />
+            <input disabled={loading} type="email" className=" w-full px-[5px] py-[10px] border-b-[1px] border-[#757575] outline-none" placeholder="Email" name="email" />
 
-            <textarea name="message" rows={5} className=" w-full mt-[15px] rounded-none border-[1px] border-black" id=""></textarea>
+            <textarea disabled={loading} name="message" rows={5} className=" w-full mt-[15px] rounded-none border-[1px] border-black" id=""></textarea>
 
-            <button className=" uppercase px-[25px] py-[10px] mt-[10px] bg-black text-white font-bold text-xl">Submit</button>
+            <button disabled={loading} className=" uppercase px-[25px] py-[10px] mt-[10px] bg-black text-white font-bold text-xl">Submit</button>
 
           </form>
         </div>

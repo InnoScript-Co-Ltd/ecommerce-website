@@ -5,6 +5,7 @@ import { baseURL, endpoints } from "@/constant/endpoints"
 import Image from "next/image";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Loading from "../loading";
 
 
 const shop = () => {
@@ -32,62 +33,51 @@ const shop = () => {
     }, [fetchProducts])
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loading />}>
 
-            {
-                productLists?.map((product, index) => {
+            {loading && (
+                <Loading />
+            )}
 
-                    return (
-                        <div key={`product_women_${index}`} className=" w-full h-[900px] md:h-[589px] relative overflow-hidden">
-                            <Image
-                                src={`${endpoints.image}/${product.bg_image.image}`}
-                                alt={`product_women_image`}
-                                fill={true}
-                                objectFit="cover"
-                                quality="100"
-                                loading={"lazy"}
-                            />
+            <div>
+                {
+                    loading === false && productLists?.map((product, index) => {
 
-                            <div className=" w-full md:w-[600px] lg:w-[800px] h-[300px] px-[10px] md:px-0 absolute top-[50%] left-[0%] md:top-[70%] md:left-[10%] -translate-x-[0%] -translate-y-[50%] text-white">
-                                <h1 className=" font-bold text-[49px] text-wrap leading-[59px]">{product.title}</h1>
-                                <p className=" font-normal text-[25px] leading-[30px]">{product.description}</p>
-                                <NextLink
-                                    href={{
-                                        pathname: `/women/detail`,
-                                        query : {
-                                            productName: product.product_name,
-                                            productIds: product.id 
-                                        }
-                                    }}
-                                >
-                                    <button className=" mt-[30px] flex items-center justify-start gap-3 font-bold text-[20px] leading-[24px] transition duration-150 ease-in-out hover:bg-primary-accent-200 hover:shadow-lg active:text-primary active:shadow-md motion-reduce:transition-none">Discover more <span> <MdArrowForwardIos />  </span> </button>
-                                </NextLink>
+                        return (
+                            <div key={`product_women_${index}`} className=" w-full h-full relative overflow-hidden">
+                                <Image
+                                    src={`${endpoints.image}/${product.bg_image.image}`}
+                                    alt={`product_women_image`}
+                                    width={0}
+                                    height={0}
+                                    layout="responsive"
+                                    objectFit="cover"
+                                    className=" w-full h-full"
+                                    quality="100"
+                                    loading={"lazy"}
+                                />
+
+                                <div className=" w-full md:w-[600px] lg:w-[800px] h-[300px] px-[10px] md:px-0 absolute top-[70%] left-[0%] md:left-[10%] -translate-x-[0%] -translate-y-[50%] text-white">
+                                    <h1 className=" font-bold text-[25px]  md:text-[35px] text-wrap leading-3 md:leading-[59px]">{product.title}</h1>
+                                    <p className=" mt-3 font-normal text-[18px] md:text-[30px] leading-5 md:leading-[30px]">{product.description}</p>
+                                    <NextLink
+                                        href={{
+                                            pathname: `/woman/detail`,
+                                            query: {
+                                                productName: product.product_name,
+                                                productIds: product.id
+                                            }
+                                        }}
+                                    >
+                                        <button className=" mt-[30px] flex items-center justify-start gap-3 font-bold text-[20px] leading-[24px] transition duration-150 ease-in-out hover:bg-primary-accent-200 hover:shadow-lg active:text-primary active:shadow-md motion-reduce:transition-none">Discover more <span> <MdArrowForwardIos />  </span> </button>
+                                    </NextLink>
+                                </div>
+
                             </div>
-
-                        </div>
-                    )
-                })
-            }
-
-            {/* <div className=" w-full h-[589px] bg-shop-sec-bg bg-cover object-cover flex justify-start align-bottom items-end">
-
-                <div className=" md:w-[600px] lg:w-[750px] h-[300px] ps-[30px] md:ps-[100px] text-white">
-                    <h1 className=" font-bold text-[49px] leading-[59px]">The A-Line Midi Denim Skirt</h1>
-                    <p className=" font-normal text-[25px] leading-[30px]">Potter ipsum wand elf parchment wingardium. <br /> Die and the </p>
-                    <button className=" mt-[30px] flex items-center justify-start gap-3 font-bold text-[20px] leading-[24px] transition duration-150 ease-in-out hover:bg-primary-accent-200 hover:shadow-lg active:text-primary active:shadow-md motion-reduce:transition-none">Discover more <span> <MdArrowForwardIos />  </span> </button>
-                </div>
-
+                        )
+                    })
+                }
             </div>
-
-            <div className=" w-full h-[589px] bg-shop-third-bg bg-cover object-cover flex justify-start align-bottom items-end">
-
-                <div className=" md:w-[600px] lg:w-[750px] h-[300px] ps-[30px] md:ps-[100px] text-white">
-                    <h1 className=" font-bold text-[49px] leading-[59px]">The Wide Leg Indigo Pant</h1>
-                    <p className=" font-normal text-[25px] leading-[30px]">Potter ipsum wand elf parchment wingardium. <br /> Die and the </p>
-                    <button className=" mt-[30px] flex items-center justify-start gap-3 font-bold text-[20px] leading-[24px] transition duration-150 ease-in-out hover:bg-primary-accent-200 hover:shadow-lg active:text-primary active:shadow-md motion-reduce:transition-none">Discover more <span> <MdArrowForwardIos />  </span> </button>
-                </div>
-
-            </div> */}
 
         </Suspense>
     )

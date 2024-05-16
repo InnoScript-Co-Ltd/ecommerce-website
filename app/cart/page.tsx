@@ -4,26 +4,36 @@ import { MdKeyboardArrowUp, MdKeyboardArrowDown } from "react-icons/md";
 import { RiDeleteBinLine } from "react-icons/ri";
 
 import NextLink from "next/link"
-import { useAppSelector } from "@/helper/hook";
+import { useAppDispatch, useAppSelector } from "@/helper/hook";
 import Image from "next/image";
 import { Suspense, useEffect, useState } from "react";
+import Loading from "../loading";
+import { addCartCount, reduceCartCount, removeCart } from "@/services/redux/cartSlice";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { endpoints } from "@/constant/endpoints";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 const page = () => {
 
     const [mounted, setMounted] = useState(false);
 
+    const dispatch = useAppDispatch();
     const cart = useAppSelector(state => state.cart);
-    console.log(cart);
+    const router = useRouter();
+    const toast = useToast();
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             setMounted(true);
         }
-    }, [])
+    }, []);
+
 
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loading />}>
 
             <div>
                 {
@@ -44,38 +54,87 @@ const page = () => {
 
                         </div>
                     ) : (
-                        <div className=" bg-[#F1F3F5] min-h-[300px]">
+                        <div className=" bg-[#F1F3F5] min-h-[300px] py-5">
 
                             <div className=" px-[30px] md:px-[100px] grid grid-cols-5 gap-3">
 
-                                <div className=" col-span-3">
+                                <div className=" col-span-5 lg:col-span-3">
                                     <div className=" bg-white p-[20px]">
                                         <h1 className=" uppercase text-2xl font-bold">Shopping Bag</h1>
                                         <div className=" w-full h-[1px] bg-[#B9B8B9] mt-[20px]"></div>
 
                                         <div>
                                             {
-                                                mounted && cart.cart.map((cart, index) => {
+                                                mounted && cart.cart.length > 0 && cart.cart.map((cart, index) => {
+
                                                     return (
-                                                        <div key={index} className=" flex items-start justify-start gap-4 mt-4">
-                                                            <Image src={'/cart.png'} width={100} height={6} alt="cart photo" />
-                                                            <div>
+                                                        <div key={index} className=" w-full h-full flex flex-col lg:flex-row items-start justify-start gap-4 mt-4">
+                                                            <div className=" w-full lg:w-[200px] h-[400px] lg:h-[200px] relative">
+
+                                                                <Carousel
+                                                                    opts={{
+                                                                        loop: true
+                                                                    }}
+                                                                    className=" w-full lg:w-[200px] h-[400px] lg:h-[200px] relative"
+                                                                >
+                                                                    <CarouselContent>
+                                                                        {
+                                                                            cart?.image.map((image : any, index : number) => (
+                                                                                <CarouselItem
+                                                                                    key={index}
+                                                                                    className=" w-full lg:w-[200px] h-[400px] lg:h-[200px] relative"
+                                                                                >
+                                                                                    <Image
+                                                                                        src={`${endpoints.image}/${image.image}`}
+                                                                                        alt="cart photo"
+                                                                                        loading="lazy"
+                                                                                        quality={100}
+                                                                                        fill={true}
+                                                                                        objectFit="cover"
+                                                                                        unoptimized={true}
+                                                                                        className=" w-full h-full"
+                                                                                    />
+                                                                                </CarouselItem>
+                                                                            ))
+                                                                        }
+                                                                    </CarouselContent>
+                                                                    <CarouselPrevious className=" absolute left-5 top-[50%] translate-x-0 -translate-y-[50%]" />
+                                                                    <CarouselNext className=" absolute right-5 top-[50%] translate-x-0 -translate-y-[50%]" />
+                                                                </Carousel>
+                                                            </div>
+                                                            <div className=" md:w-[200px] lg:min-w-[200px]">
                                                                 <h1 className=" text-lg font-bold">{cart.title}</h1>
-                                                                <p className=" text-base">{cart.desc.length > 50 ? cart.desc.substring(0,50)+'...' : cart.desc}</p>
+                                                                <p className=" text-base">{cart.desc.length > 50 ? cart.desc.substring(0, 50) + '...' : cart.desc}</p>
                                                                 {/* <p className=" text-[#979698]">UK S (6-8) | EU 28 | US-4</p> */}
 
                                                                 <div className=" w-[100px] flex items-center justify-start">
-                                                                    <div className=" p-[10px] bg-[#B9B8B9] flex items-center justify-center">
-                                                                        Qty :
+                                                                    <div className=" p-[10px] bg-[#B9B8B9] text-[14px] flex items-center justify-center">
+                                                                        <span>Qty:</span>
                                                                     </div>
                                                                     <p className=" select-none p-[10px] flex items-center justify-center">{cart.choose_count}</p>
                                                                     <div className=" flex flex-col items-center justify-center gap-1">
-                                                                        <MdKeyboardArrowUp className=" cursor-pointer active:text-primary focus:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
-                                                                        <MdKeyboardArrowDown className=" cursor-pointer active:text-primary focus:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
+                                                                        <MdKeyboardArrowUp onClick={() => {
+                                                                            dispatch(addCartCount({ id: cart.id }))
+                                                                        }} className=" cursor-pointer active:text-primary focus:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
+                                                                        <MdKeyboardArrowDown onClick={() => {
+                                                                            dispatch(reduceCartCount({ id: cart.id }))
+                                                                        }} className=" cursor-pointer active:text-primary focus:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div className=" ml-auto">
+                                                            <div onClick={() => {
+                                                                toast.toast({
+                                                                    variant: "destructive",
+                                                                    title: 'Remove your item draft, Are you sure to remove?',
+                                                                    action: (
+                                                                        <ToastAction onClick={() => {
+                                                                            dispatch(removeCart({ id: cart.id }))
+                                                                        }} altText="Goto schedule to undo">
+                                                                            Remove
+                                                                        </ToastAction>
+                                                                    ),
+                                                                })
+                                                            }} className=" cursor-pointer active:scale-110 active:text-primary ml-auto">
                                                                 <RiDeleteBinLine className=" cursor-pointer hover:scale-105" size={20} />
                                                             </div>
                                                         </div>
@@ -86,7 +145,7 @@ const page = () => {
                                     </div>
                                 </div>
 
-                                <div className=" col-span-2">
+                                <div className=" col-span-5 lg:col-span-2">
                                     <div className=" bg-white p-[20px] h-[260px]">
                                         <div className=" flex items-center justify-between">
                                             <h1 className=" text-base font-bold">Subtotal</h1>
@@ -96,7 +155,7 @@ const page = () => {
                                         <button className=" w-full h-[50px] mt-[25px] text-xl font-bold text-primary border-2 border-primary flex items-center justify-center ">
                                             You've saved $45.00 so far
                                         </button>
-                                        <button className=" w-full h-[50px] mt-[20px] text-xl font-bold uppercase text-white bg-green-500 flex items-center justify-center">
+                                        <button onClick={() => router.push('/checkout')} className=" w-full h-[50px] mt-[20px] text-xl font-bold uppercase text-white bg-green-500 flex items-center justify-center">
                                             checkout now
                                         </button>
                                         <div className=" w-full h-[1px] bg-[#B9B8B9] mt-[20px]"></div>

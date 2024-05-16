@@ -109,10 +109,10 @@ const Header = () => {
 
               <ul className=' flex justify-start items-center gap-7 font-bold text-[16px] leading-3'>
                 <li>
-                  <NextLink className={` cursor-pointer ${pathName === '/man' ? 'link-active' : ''}`} href={'/man'} >Men</NextLink>
+                  <NextLink className={` cursor-pointer ${pathName === '/man' ? 'link-active' : ''}`} href={'/man'} >Man</NextLink>
                 </li>
                 <li>
-                  <NextLink className={` cursor-pointer ${pathName === '/woman' ? 'link-active' : ''}`} href={'/woman'} >Women</NextLink>
+                  <NextLink className={` cursor-pointer ${pathName === '/woman' ? 'link-active' : ''}`} href={'/woman'} >Woman</NextLink>
                 </li>
               </ul>
 
@@ -161,6 +161,7 @@ const Header = () => {
                             checked={isChecked}
                             onCheckedChange={() => {
                               localStorage.setItem(keys.EXCHANGE, JSON.stringify(exchange));
+                              setCheckedExchange(exchange);
                               dispatch(addExchange(exchange))
                             }}
                             key={`exchnage_${index}`}
@@ -219,25 +220,25 @@ const Header = () => {
 
             <ul className=' px-[30px] pt-[50px] text-white font-bold flex flex-col gap-3'>
 
-              <li className={` cursor-pointer text-primary ${pathName === '/man' ? ' underline' : ''}`}>
+              <li onClick={() => setMobile(!mobile)} className={` cursor-pointer text-primary ${pathName === '/man' ? ' underline' : ''}`}>
                 <NextLink href={'/man'}>
                   Man
                 </NextLink>
               </li>
 
-              <li className={` cursor-pointer text-primary ${pathName === '/woman' ? ' underline' : ''}`}>
+              <li onClick={() => setMobile(!mobile)} className={` cursor-pointer text-primary ${pathName === '/woman' ? ' underline' : ''}`}>
                 <NextLink href={"/woman"}>
                   Woman
                 </NextLink>
               </li>
 
-              <li className={` cursor-pointer text-primary ${pathName === '/about' ? ' underline' : ''}`}>
+              <li onClick={() => setMobile(!mobile)} className={` cursor-pointer text-primary ${pathName === '/about' ? ' underline' : ''}`}>
                 <NextLink href={'/about'}>
                   About
                 </NextLink>
               </li>
 
-              <li className=' cursor-pointer text-primary transition duration-300 ease-in-out'>
+              <li onClick={() => setMobile(!mobile)} className=' cursor-pointer text-primary transition duration-300 ease-in-out'>
                 <NextLink href={'/contact-us'}>
                   Contact Us
                 </NextLink>

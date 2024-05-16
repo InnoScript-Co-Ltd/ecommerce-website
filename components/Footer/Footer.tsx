@@ -1,3 +1,4 @@
+'use client'
 import Image from "next/image";
 import "./footer.css";
 import VisaPayment from "../../public/visa.png"
@@ -5,9 +6,13 @@ import SecondPayment from "../../public/second_payment.png";
 import ThirdPayment from "../../public/third_payment.png"
 import AMEX from "../../public/amex.png"
 import { FaInstagram, FaFacebookF, FaPinterest } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 
 const Footer = () => {
+
+    const router = useRouter();
+
     return (
         <div className=" bg-white flex justify-center">
 
@@ -46,7 +51,7 @@ const Footer = () => {
 
                         <ul className=" mt-[20px] flex flex-col gap-3">
 
-                            <li className=" font-bold text-[16px] leading-[19px] text-black-50">
+                            <li onClick={() => router.push('/contact-us')} className=" cursor-pointer font-bold text-[16px] leading-[19px] text-black-50">
                                 <p>Contact Us</p>
                             </li>
 
