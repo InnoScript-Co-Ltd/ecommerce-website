@@ -1,7 +1,7 @@
 'use client'
 import { keys } from "@/constant/key";
 import { useAppDispatch, useAppSelector } from "@/helper/hook"
-import { addCart, addCartCount, reduceCartCount } from "@/services/redux/cartSlice";
+import { addCart, addCartCount, reduceCartCount, Color, Size } from "@/services/redux/cartSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { HeartIcon } from "@radix-ui/react-icons";
@@ -21,6 +21,7 @@ import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { addExchange } from "@/services/redux/exchangeSlice";
 import { baseURL, endpoints } from "@/constant/endpoints";
 import Loading from "../loading";
+import { addFav } from "@/services/redux/favSlice";
 
 interface ITEM {
   id: number,
@@ -65,10 +66,12 @@ const page = ({
     count: 1
   });
   const [item, setItem] = useState<ITEM>();
+  const [selectFav, setSelectFav] = useState<boolean>(false);
 
   const cartLists = useAppSelector(state => state.cart);
   const dispatch = useAppDispatch();
   const exchange = useAppSelector((state) => state.exchnage);
+  const favState = useAppSelector((state) => state.fav);
   const router = useRouter();
 
 
@@ -148,6 +151,8 @@ const page = ({
       cartLists.cart.filter((cart : any) => {
         
         if(cart?.id === item?.id){
+          console.log(cart);
+          
           setSelectColor(cart.choose_color);
           setSelectSize(cart.choose_size);
           setChoose({
@@ -159,7 +164,19 @@ const page = ({
         }
       })
     }
-  }, [cartLists, item])
+  }, [cartLists.cart, item])
+  
+
+  useEffect(() => {
+    if(favState.fav.length > 0){
+      favState.fav.map((fav) => {        
+        if(fav.id === item?.id){
+          setSelectFav(true);
+        }
+      })
+    }
+
+  }, [favState.fav, item])
   
 
   return (
@@ -255,11 +272,16 @@ const page = ({
                       borderRadius: '50%',
                       display: 'flex',
                       justifyContent: 'center',
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      cursor: 'pointer'
                     }}
                     onClick={() => {
-                      setSelectColor(color)
-                      setChoose({...choose, color: color})
+                      setSelectColor(color);
+                      setChoose({...choose, color: color});
+                      dispatch(Color({
+                        id: item?.id, 
+                        color: color
+                    }));
                     }}
                     className=" font-bold active:scale-110 active:shadow transition-all duration-300 ease-in"
                   >
@@ -284,8 +306,12 @@ const page = ({
                     onClick={() => {
                       setSelectSize(size)
                       setChoose({...choose, size : size})
+                      dispatch(Size({
+                        id: item?.id,
+                        size: size
+                      }))
                     }}
-                    className={`${size === selectSize ? ' bg-black text-white font-bold shadow' : ''} w-[40px] h-[40px] border border-black rounded-sm uppercase flex items-center justify-center transition-all duration-300 ease-in`}
+                    className={`${size === selectSize ? ' bg-black text-white font-bold shadow' : ''} w-[40px] h-[40px] border border-black rounded-sm uppercase flex items-center justify-center transition-all duration-300 ease-in cursor-pointer`}
                   >
                     {size}
                   </div>
@@ -313,7 +339,13 @@ const page = ({
               <div className=" flex flex-col items-center justify-center gap-1">
                 <MdKeyboardArrowUp onClick={() => {
                   if(cartLists.cart.length > 0){
-                    dispatch(addCartCount({id: item?.id}))
+                    cartLists.cart.map((cart) => {
+                      if(cart.id === item?.id){
+                        dispatch(addCartCount({id: item?.id}))
+                      }else {
+                        addCount();
+                      }
+                    })
                   }else {
                     addCount();
                   }
@@ -334,7 +366,12 @@ const page = ({
               Add To Bag
             </button>
 
-            <button className=" w-[50px] h-[50px] border border-black grid items-center justify-center rounded-sm ">
+            <button 
+              className={`${selectFav ? 'text-white bg-red-500 border-none' : 'border border-black'} w-[50px] h-[50px] grid items-center justify-center rounded-sm `}
+              onClick={() => {
+                dispatch(addFav(item))
+              }}
+            >
               <HeartIcon width={'20px'} height={'20px'} />
             </button>
 
