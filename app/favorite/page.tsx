@@ -108,7 +108,7 @@ const page = () => {
                                                     <div onClick={() => {
                                                         toast.toast({
                                                             variant: "destructive",
-                                                            title: 'Remove your item draft, Are you sure to remove?',
+                                                            title: 'Remove your fav item, Are you sure to remove?',
                                                             action: (
                                                                 <ToastAction onClick={() => {
                                                                     dispatch(removeFav({ id: fav.id }))
