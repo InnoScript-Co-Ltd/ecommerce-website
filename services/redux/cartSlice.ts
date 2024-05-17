@@ -2,13 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from './store';
 import { keys } from '@/constant/key';
 
-interface CounterState {
+interface cartState {
     cart: Array<any>;
 }
 
 const cartLocal = typeof window !== 'undefined' && typeof document !== 'undefined' && localStorage.getItem(keys.CART);
 
-export const initialState: CounterState = {
+export const initialState: cartState = {
     cart: cartLocal ? JSON.parse(cartLocal!) : []
 };
 
@@ -71,12 +71,28 @@ export const cartSlice = createSlice({
                 }
             });
             localStorage.setItem(keys.CART, JSON.stringify(state.cart))
+        },
+        Color: (state, action: PayloadAction<{id: any, color: string}>) => {
+            state.cart.map((cart) => {
+                if (cart.id === action.payload.id) {
+                    cart.choose_color = action.payload.color;
+                }
+            });
+            localStorage.setItem(keys.CART, JSON.stringify(state.cart));
+        },
+        Size: (state, action: PayloadAction<{id:any , size: string}>) => {
+            state.cart.map((cart) => {
+                if(cart.id === action.payload.id){
+                    cart.choose_size = action.payload.size;
+                }
+            });
+            localStorage.setItem(keys.CART, JSON.stringify(state.cart));
         }
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { addCart, removeCart, reduceCartCount, addCartCount } = cartSlice.actions
+export const { addCart, removeCart, reduceCartCount, addCartCount, Color, Size } = cartSlice.actions
 
 export const cartState = (state: RootState) => state.cart;
 

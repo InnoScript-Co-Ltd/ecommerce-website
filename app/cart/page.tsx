@@ -45,7 +45,7 @@ const page = () => {
                                     <FaShoppingBag size={30} />
                                 </div>
                                 <p className=" text-2xl mt-5 font-extrabold text-center leading-[20px]">Your shopping bag is empty!</p>
-                                <NextLink href={'/shop'}>
+                                <NextLink href={'/'}>
                                     <button className=" block mx-auto font-bold uppercase px-[20px] py-[10px] mt-5 bg-black text-white rounded-[20px]">
                                         Continue Shopping
                                     </button>

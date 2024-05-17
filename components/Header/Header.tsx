@@ -24,6 +24,7 @@ import { baseURL, endpoints } from '@/constant/endpoints'
 import { useAppDispatch, useAppSelector } from '@/helper/hook'
 import { keys } from '@/constant/key'
 import { addExchange } from '@/services/redux/exchangeSlice'
+import { HeartIcon, HeartPulseIcon } from 'lucide-react'
 
 interface EXCHANGE {
   id: number;
@@ -45,6 +46,7 @@ const Header = () => {
   const pathName = usePathname();
   const dispatch = useAppDispatch();
   const cartLists = useAppSelector(state => state.cart);
+  const favLists = useAppSelector(state => state.fav);
 
   const fetchExchange = useCallback(async () => {
     const response = await fetch(`${baseURL}${endpoints.exchange}`);
@@ -143,8 +145,22 @@ const Header = () => {
                 <li>
                   <NextLink href={'/search'} ><Image src={Search} alt="Search icon" /></NextLink>
                 </li>
-                <li>
-                  <Image src={Link} alt="link icon" />
+                <li className=' relative'>
+                  {
+                    favLists.fav.length > 0 ? (
+                      <NextLink href={'/favorite'}>
+                      <HeartPulseIcon />
+                      <p className=' animate-bounce absolute top-0 -right-2 w-[15px] h-[15px] text-[12px] font-bold bg-red-500 rounded-full flex items-center justify-center'>
+                        {favLists.fav.length}
+                      </p>
+                      </NextLink>
+                    ) : (
+                      <NextLink href={'/favorite'}>
+                        <HeartIcon />
+                      </NextLink>
+                    )
+                  }
+                  
                 </li>
                 <li>
                   <DropdownMenu>
@@ -179,7 +195,7 @@ const Header = () => {
                 <li className=' relative'>
                   {
                     cartLists.cart.length > 0 && (
-                      <p className=' absolute top-0 -right-2 w-[15px] h-[15px] text-[12px] font-bold bg-red-500 rounded-full flex items-center justify-center'>
+                      <p className=' animate-bounce absolute top-0 -right-2 w-[15px] h-[15px] text-[12px] font-bold bg-red-500 rounded-full flex items-center justify-center'>
                         {cartLists.cart.length}
                       </p>
                     )
