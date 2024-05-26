@@ -22,6 +22,7 @@ import { addExchange } from "@/services/redux/exchangeSlice";
 import { baseURL, endpoints } from "@/constant/endpoints";
 import Loading from "../loading";
 import { addFav } from "@/services/redux/favSlice";
+import { dynamicBlurDataUrl } from "@/helper/dynamicBlurDataUrl";
 
 interface ITEM {
   id: number,
@@ -44,7 +45,8 @@ interface ITEM {
     description: string,
     man_or_woman: string,
     is_public: string,
-  }
+  },
+  productBlurData: string
 }
 
 const page = ({
@@ -66,6 +68,7 @@ const page = ({
     count: 1
   });
   const [item, setItem] = useState<ITEM>();
+  const [detailImage, setDetailImage] = useState<any>();
   const [selectFav, setSelectFav] = useState<boolean>(false);
 
   const cartLists = useAppSelector(state => state.cart);
@@ -124,7 +127,19 @@ const page = ({
       const response = await fetch(`${baseURL}${endpoints.item}/${searchParams.item}`);
       const data = await response.json();
       if (data.data) {
-        setItem(data.data);
+
+        const updateDetailImage = await Promise.all(
+          data.data.detail_images.map(async (image : any) => {
+            const blurData = await dynamicBlurDataUrl(image.image)
+            return {...image, blurData};
+          })
+        );
+        setDetailImage(updateDetailImage)
+
+        const productBlurData = await dynamicBlurDataUrl(data.data.product.bg_image.image);
+        
+
+        setItem({...data.data, productBlurData});
         setLoading(false);
       } else {
         setLoading(false);
@@ -132,7 +147,8 @@ const page = ({
 
     }
 
-  }, [searchParams.item])
+  }, [searchParams.item]);
+  
 
   useEffect(() => {
     getItem()
@@ -180,18 +196,14 @@ const page = ({
   
 
   return (
-    <Suspense fallback={<Loading />}>
-
-      {loading && (
-        <Loading />
-      )}
+    <div>
 
       <div className=" grid grid-cols-5 px-[10px] lg:px-[50px] mt-[50px]">
         <div className="col-span-5 md:col-span-1 col-start-1">
 
           <div className="w-full h-full flex flex-col relative">
             {
-              loading === false && item?.detail_images?.slice(0, 4).map((image, index) => {
+              loading === false && detailImage?.slice(0, 4).map((image : any, index : number) => {
                 return (
                   <Image
                     key={index}
@@ -201,8 +213,10 @@ const page = ({
                     width={0}
                     height={0}
                     objectFit="cover"
-                    unoptimized={true}
+                    unoptimized
                     className=" w-full h-[200px]"
+                    placeholder="blur"
+                    blurDataURL={image.blurData}
                   // sizes="(max-width: 768px) 100%, (max-width: 1200px) 100%, (max-height: 200px) 200px"
                   />
                 )
@@ -222,7 +236,7 @@ const page = ({
           >
             <CarouselContent>
               {
-                item?.detail_images.map((image, index) => (
+                detailImage?.map((image : any, index : number) => (
                   <CarouselItem
                     key={index}
                     className=" w-full h-full"
@@ -235,7 +249,8 @@ const page = ({
                       height={0}
                       objectFit="contain"
                       className=" w-full h-[800px]"
-                      priority={true}
+                      placeholder="blur"
+                      blurDataURL={image.blurData}
                     />
                   </CarouselItem>
                 ))
@@ -387,7 +402,9 @@ const page = ({
 
       </div>
 
-      <div>
+      {
+        loading === false && item !== null && item !== undefined && (
+          <div>
         <h1 className=" text-center font-bold text-xl my-[50px]">Similar Product</h1>
         <div className="w-full h-full relative">
           <Image
@@ -400,6 +417,8 @@ const page = ({
             className=" w-full h-full"
             quality="100"
             loading={"lazy"}
+            placeholder="blur"
+            blurDataURL={item?.productBlurData}
           />
 
           <div className=" absolute top-[50%] left-[5%] -translate-y-[50%] text-white">
@@ -414,8 +433,10 @@ const page = ({
 
         </div>
       </div>
+        )
+      }
 
-    </Suspense>
+    </div>
   )
 }
 
