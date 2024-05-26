@@ -17,6 +17,7 @@ export const imageURL = imageURLs[env];
 
 export const endpoints = {
     image: `${imageURL}/storage/images`,
+    product: "/product",
     productMen: '/product/man',
     productWomen: '/product/woman',
     productDetail: '/product-detail',
