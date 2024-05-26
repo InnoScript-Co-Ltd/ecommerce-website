@@ -15,18 +15,41 @@ import { ToastAction } from "@/components/ui/toast";
 import { endpoints } from "@/constant/endpoints";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
+interface CART {
+
+    choose_color: string,
+    choose_count: number,
+    choose_size: string,
+    desc: string,
+    id: number,
+    image : Array<any>,
+    price : string,
+    promotionPrice: string,
+    title: string
+}
+
+interface CARTLISTS extends Array<CART> {}
+
+function sumPrices(cart: any, priceType: string) {
+    return cart.reduce((sum: any, current: any) => sum + parseFloat(current[priceType] || 0), 0);
+}
+
 const page = () => {
 
     const [mounted, setMounted] = useState(false);
+    const [price, setPrice] = useState<number>(0);
+    const [promoPrice, setPromoPrice] = useState<number>(0);
 
     const dispatch = useAppDispatch();
-    const cart = useAppSelector(state => state.cart);
+    const cart : any = useAppSelector(state => state.cart);
     const router = useRouter();
     const toast = useToast();
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             setMounted(true);
+            setPrice(sumPrices(cart.cart, "price"))
+            setPromoPrice(sumPrices(cart.cart, "promotionPrice"))
         }
     }, []);
 
@@ -65,7 +88,7 @@ const page = () => {
 
                                         <div>
                                             {
-                                                mounted && cart.cart.length > 0 && cart.cart.map((cart, index) => {
+                                                mounted && cart.cart.length > 0 && cart.cart.map((cart : any, index : number) => {
 
                                                     return (
                                                         <div key={index} className=" w-full h-full flex flex-col lg:flex-row items-start justify-start gap-4 mt-4">
@@ -79,7 +102,7 @@ const page = () => {
                                                                 >
                                                                     <CarouselContent>
                                                                         {
-                                                                            cart?.image.map((image : any, index : number) => (
+                                                                            cart?.image.map((image: any, index: number) => (
                                                                                 <CarouselItem
                                                                                     key={index}
                                                                                     className=" w-full lg:w-[200px] h-[400px] lg:h-[200px] relative"
@@ -149,11 +172,11 @@ const page = () => {
                                     <div className=" bg-white p-[20px] h-[260px]">
                                         <div className=" flex items-center justify-between">
                                             <h1 className=" text-base font-bold">Subtotal</h1>
-                                            <h3 className=" text-red-500 font-bold">$ 118.00</h3>
+                                            <h3 className=" text-red-500 font-bold">$ {price}</h3>
                                         </div>
 
                                         <button className=" w-full h-[50px] mt-[25px] text-xl font-bold text-primary border-2 border-primary flex items-center justify-center ">
-                                            You've saved $45.00 so far
+                                            You've saved ${price - promoPrice} so far
                                         </button>
                                         <button onClick={() => router.push('/checkout')} className=" w-full h-[50px] mt-[20px] text-xl font-bold uppercase text-white bg-green-500 flex items-center justify-center">
                                             checkout now

@@ -6,6 +6,20 @@ import Image from "next/image";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Loading from "../loading";
+import { dynamicBlurDataUrl } from "@/helper/dynamicBlurDataUrl";
+
+interface PRODUCT {
+    bg_image: {
+      id: number,
+      image: string
+    },
+    description: string,
+    id: number,
+    is_public: string,
+    man_or_woman: string,
+    product_name: string,
+    title: string,
+  }
 
 
 const shop = () => {
@@ -20,7 +34,14 @@ const shop = () => {
         const response = await fetch(`${baseURL}${endpoints.productWomen}`);
         const products = await response.json();
         if (products.data) {
-            setProductLists(products.data);
+
+            const updateWomenProduct = await Promise.all(
+                products.data.map(async (product:PRODUCT) => {
+                    const blurData = await dynamicBlurDataUrl(product.bg_image.image);
+                    return {...product, blurData}
+                })
+            )
+            setProductLists(updateWomenProduct);
             setLoading(false);
         } else {
             setLoading(false);
@@ -33,15 +54,12 @@ const shop = () => {
     }, [fetchProducts])
 
     return (
-        <Suspense fallback={<Loading />}>
+        <div>
 
-            {loading && (
-                <Loading />
-            )}
 
             <div>
                 {
-                    loading === false && productLists?.map((product, index) => {
+                    productLists?.map((product, index) => {
 
                         return (
                             <div key={`product_women_${index}`} className=" w-full h-full relative overflow-hidden">
@@ -54,7 +72,9 @@ const shop = () => {
                                     objectFit="cover"
                                     className=" w-full h-full"
                                     quality="100"
-                                    loading={"lazy"}
+                                    // loading={"lazy"}
+                                    placeholder="blur"
+                                    blurDataURL={product.blurData}
                                 />
 
                                 <div className=" w-full md:w-[600px] lg:w-[800px] h-[300px] px-[10px] md:px-0 absolute top-[70%] left-[0%] md:left-[10%] -translate-x-[0%] -translate-y-[50%] text-white">
@@ -79,7 +99,7 @@ const shop = () => {
                 }
             </div>
 
-        </Suspense>
+        </div>
     )
 }
 
