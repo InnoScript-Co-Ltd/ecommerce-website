@@ -12,7 +12,12 @@ const Header = dynamic(() => import('@/components/Header/Header'), { ssr: false 
 const Footer = dynamic(() => import("@/components/Footer/Footer"), { ssr: false });
 
 // const inter = Inter({ subsets: ["latin"] });
-const roboto_condensed = Roboto_Condensed({ subsets: ['latin'] });
+// const roboto_condensed = Roboto_Condensed({ 
+//   subsets: ['latin'], 
+//   display: 'swap', 
+//   // adjustFontFallback: false, 
+//   preload: false, 
+// });
 
 export const metadata: Metadata = {
   title: "WinKhin",
@@ -26,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={roboto_condensed.className}>
+      <body>
         <StoreProvider
           cart={[]}
         >
