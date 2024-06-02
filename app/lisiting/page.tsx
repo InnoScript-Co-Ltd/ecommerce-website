@@ -167,7 +167,6 @@ const page = ({
       cartLists.cart.filter((cart : any) => {
         
         if(cart?.id === item?.id){
-          console.log(cart);
           
           setSelectColor(cart.choose_color);
           setSelectSize(cart.choose_size);
@@ -186,7 +185,7 @@ const page = ({
   useEffect(() => {
     if(favState.fav.length > 0){
       favState.fav.map((fav) => {        
-        if(fav.id === item?.id){
+        if(fav && fav.id === item?.id){
           setSelectFav(true);
         }
       })

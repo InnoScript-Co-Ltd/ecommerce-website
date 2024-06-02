@@ -4,14 +4,13 @@ import "./header.css"
 import Image from 'next/image'
 import Logo from "../../public/logo.svg"
 import Search from "../../public/search.svg"
-import Link from "../../public/link.svg";
-import ShopBag from "../../public/shop_bag.svg"
+import ShopBag from "../../public/bag_white.svg"
+import ShopButton from "../../public/bag.svg"
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RxCross1 } from "react-icons/rx";
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation'
-import { GlobeIcon } from '@radix-ui/react-icons'
-import { Button } from "@/components/ui/button"
+import { GlobeIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -259,6 +258,72 @@ const Header = () => {
                   Contact Us
                 </NextLink>
               </li>
+
+              <li className=' cursor-pointer text-primary transition duration-300 ease-in-out'>
+                  <NextLink href={'/search'}>
+                   <MagnifyingGlassIcon width={30} height={30} />
+                  </NextLink>
+                </li>
+
+              <li className=' relative cursor-pointer text-primary transition duration-300 ease-in-out'>
+                  {
+                    favLists.fav.length > 0 ? (
+                      <NextLink href={'/favorite'}>
+                      <HeartPulseIcon />
+                      <p className=' animate-bounce absolute top-0 left-4 w-[15px] h-[15px] text-[12px] font-bold bg-red-500 text-white rounded-full flex items-center justify-center'>
+                        {favLists.fav.length}
+                      </p>
+                      </NextLink>
+                    ) : (
+                      <NextLink href={'/favorite'}>
+                        <HeartIcon />
+                      </NextLink>
+                    )
+                  }
+                  
+                </li>
+                <li className=' relative cursor-pointer text-primary transition duration-300 ease-in-out'>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild className=' cursor-pointer'>
+                      <GlobeIcon width={'25px'} height={'25px'} />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56 !z-[999]">
+                      <DropdownMenuLabel>Rate</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {exchange.length > 0 ? exchange?.map((exchange: any, index) => {
+                        const isChecked = checkedExchange?.name === exchange.name;
+                        return (
+                          <DropdownMenuCheckboxItem
+                            checked={isChecked}
+                            onCheckedChange={() => {
+                              localStorage.setItem(keys.EXCHANGE, JSON.stringify(exchange));
+                              setCheckedExchange(exchange);
+                              dispatch(addExchange(exchange))
+                            }}
+                            key={`exchnage_${index}`}
+                          >
+                            {exchange.name}
+                          </DropdownMenuCheckboxItem>
+                        )
+                      }) : (
+                        <p>No avaliable rate</p>
+                      )}
+
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </li>
+                <li className=' relative cursor-pointer text-primary transition duration-300 ease-in-out'>
+                  {
+                    cartLists.cart.length > 0 && (
+                      <p className=' animate-bounce absolute top-0 left-4 w-[15px] h-[15px] text-[12px] bg-red-500 text-white font-bold rounded-full flex items-center justify-center'>
+                        {cartLists.cart.length}
+                      </p>
+                    )
+                  }
+                  <NextLink href={'/cart'} className=' !text-primary'>
+                    <Image src={ShopButton} alt="shop bag icon" className=' !text-primary' />
+                  </NextLink>
+                </li>
 
             </ul>
 

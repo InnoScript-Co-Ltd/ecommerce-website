@@ -127,7 +127,10 @@ const page = () => {
                                                             </div>
                                                             <div className=" md:w-[200px] lg:min-w-[200px]">
                                                                 <h1 className=" text-lg font-bold">{cart.title}</h1>
-                                                                <p className=" text-base">{cart.desc.length > 50 ? cart.desc.substring(0, 50) + '...' : cart.desc}</p>
+                                                                <div 
+                                                                className=" text-base"
+                                                                dangerouslySetInnerHTML={{ __html: cart.desc.length > 100 ? cart.desc.substring(0, 100) + '...' : cart.desc }}
+                                                                />
                                                                 {/* <p className=" text-[#979698]">UK S (6-8) | EU 28 | US-4</p> */}
 
                                                                 <div className=" w-[100px] flex items-center justify-start">
