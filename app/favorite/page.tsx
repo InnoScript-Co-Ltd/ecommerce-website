@@ -102,7 +102,10 @@ const page = () => {
                                                     </div>
                                                     <div className=" md:w-[200px] lg:min-w-[200px]">
                                                         <h1 className=" text-lg font-bold">{fav.title}</h1>
-                                                        <p className=" text-base">{fav.product_detail_content.length > 50 ? fav.product_detail_content.substring(0, 50) + '...' : fav.product_detail_content}</p>
+                                                        <div 
+                                                            className=" text-base"
+                                                            dangerouslySetInnerHTML={{ __html : fav.product_detail_content.length > 50 ? fav.product_detail_content.substring(0, 50) + '...' : fav.product_detail_content }}
+                                                        />
                                                         
                                                     </div>
                                                     <div onClick={() => {
