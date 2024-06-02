@@ -25,7 +25,7 @@ export const favSlice = createSlice({
             if (typeof window !== 'undefined' && typeof state.fav !== 'string') {
                 if (state.fav.length > 0) {
                     state.fav.filter((fav) => {
-                        if(fav.id !== action.payload.id){
+                        if(fav && fav.id !== action.payload.id){
                             state.fav = [...state.fav, action.payload]; // Using spread operator to create a new array
                             localStorage.setItem(keys.FAV, JSON.stringify(state.fav))
                         }

@@ -7,6 +7,7 @@ import ThirdPayment from "../../public/third_payment.png"
 import AMEX from "../../public/amex.png"
 import { FaInstagram, FaFacebookF, FaPinterest } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import NextLink from "next/link"
 
 
 const Footer = () => {
@@ -76,16 +77,26 @@ const Footer = () => {
                         <ul className=" mt-[20px] flex flex-col gap-3">
 
                             <li className=" text-black-50">
-                                <FaInstagram />
+                                <NextLink 
+                                    href={"https://www.instagram.com/winykhin.luntaya"}
+                                    target="__blank"
+                                >
+                                    <FaInstagram />
+                                </NextLink>
                             </li>
 
                             <li className=" text-black-50">
-                                <FaFacebookF />
+                                <NextLink 
+                                    href="https://www.facebook.com/LUNTAYA.FASHION"
+                                    target="__blank"
+                                >
+                                    <FaFacebookF />
+                                </NextLink>
                             </li>
 
-                            <li className=" text-black-50">
+                            {/* <li className=" text-black-50">
                                 <FaPinterest />
-                            </li>
+                            </li> */}
 
                         </ul>
                     </div>
