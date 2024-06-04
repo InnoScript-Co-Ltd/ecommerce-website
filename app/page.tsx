@@ -57,11 +57,11 @@ const Page = () => {
   
 
   return (
-    <div>
+    <Suspense fallback={<Loading />}>
 
-      {/* {
+      {
         loading && <Loading />
-      } */}
+      }
 
       {
         productLists.map((product : any, index) => (
@@ -99,7 +99,7 @@ const Page = () => {
           </div>
         ))
       }
-    </div>
+    </Suspense>
   );
 };
 

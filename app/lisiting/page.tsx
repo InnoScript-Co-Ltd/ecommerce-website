@@ -195,7 +195,13 @@ const page = ({
   
 
   return (
-    <div>
+    <Suspense fallback={<Loading />}>
+
+      {
+        loading && (
+          <Loading />
+        )
+      }
 
       <div className=" grid grid-cols-5 px-[10px] lg:px-[50px] mt-[50px]">
         <div className="col-span-5 md:col-span-1 col-start-1">
@@ -435,7 +441,7 @@ const page = ({
         )
       }
 
-    </div>
+    </Suspense>
   )
 }
 

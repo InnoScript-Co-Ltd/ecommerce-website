@@ -92,7 +92,7 @@ const shopDetail = ({
 
 
     return (
-        <div>
+        <Suspense fallback={<Loading />}>
 
             {loading && (
                 <Loading />
@@ -269,7 +269,7 @@ const shopDetail = ({
                 )
             }
 
-        </div>
+        </Suspense>
     )
 
 }

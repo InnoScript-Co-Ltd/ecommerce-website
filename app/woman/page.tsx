@@ -54,8 +54,13 @@ const shop = () => {
     }, [fetchProducts])
 
     return (
-        <div>
+        <Suspense fallback={<Loading />}>
 
+            {
+                loading && (
+                    <Loading />
+                )
+            }
 
             <div>
                 {
@@ -99,7 +104,7 @@ const shop = () => {
                 }
             </div>
 
-        </div>
+        </Suspense>
     )
 }
 
