@@ -117,9 +117,9 @@ const Header = () => {
                 </li>
               </ul>
 
-              <div className=' translate-x-10'>
+              <div className=' lg:-translate-x-3 xl:translate-x-16'>
                 <NextLink href={'/'}>
-                  <Image src={Logo} alt="WinKhin Logo" />
+                  <p className=' uppercase font-semibold xl:text-lg'>Lady from Burma</p>
                 </NextLink>
               </div>
 

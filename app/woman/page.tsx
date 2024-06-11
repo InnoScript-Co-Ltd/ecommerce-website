@@ -83,8 +83,8 @@ const shop = () => {
                                 />
 
                                 <div className=" w-full md:w-[600px] lg:w-[800px] h-[300px] px-[10px] md:px-0 absolute top-[70%] left-[0%] md:left-[10%] -translate-x-[0%] -translate-y-[50%] text-white">
-                                    <h1 className=" font-bold text-[25px]  md:text-[35px] text-wrap leading-3 md:leading-[59px]">{product.title}</h1>
-                                    <p className=" mt-3 font-normal text-[18px] md:text-[30px] leading-5 md:leading-[30px]">{product.description}</p>
+                                    <h1 className=" font-bold text-[25px]  md:text-[35px] text-wrap md:leading-[59px]">{product.title.length > 30 ? product.title.substring(0,30)+"..." : product.title}</h1>
+                                    <p className=" mt-3 font-normal text-[18px] md:text-[30px] md:leading-[30px]">{product.description}</p>
                                     <NextLink
                                         href={{
                                             pathname: `/woman/detail`,

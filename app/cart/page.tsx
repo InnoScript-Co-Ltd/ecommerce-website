@@ -6,13 +6,13 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import NextLink from "next/link"
 import { useAppDispatch, useAppSelector } from "@/helper/hook";
 import Image from "next/image";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import Loading from "../loading";
-import { addCartCount, reduceCartCount, removeCart } from "@/services/redux/cartSlice";
+import { addCartCount, reduceCartCount, removeCart, total } from "@/services/redux/cartSlice";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { endpoints } from "@/constant/endpoints";
+import { baseURL, endpoints } from "@/constant/endpoints";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 interface CART {
@@ -37,23 +37,64 @@ function sumPrices(cart: any, priceType: string) {
 const page = () => {
 
     const [mounted, setMounted] = useState(false);
-    const [price, setPrice] = useState<number>(0);
-    const [promoPrice, setPromoPrice] = useState<number>(0);
 
     const dispatch = useAppDispatch();
     const cart : any = useAppSelector(state => state.cart);
+    const exchange = useAppSelector((state) => state.exchnage);
     const router = useRouter();
     const toast = useToast();
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            setMounted(true);
-            setPrice(sumPrices(cart.cart, "price"))
-            setPromoPrice(sumPrices(cart.cart, "promotionPrice"))
+        setMounted(true);
+        dispatch(total(["price","promotionPrice", "choose_count"]))
+    }, [dispatch]);
+
+    console.log(exchange);
+    
+
+    const checkout = async () => {
+
+        const formatCheckout = cart.cart.map((cart : any) => {
+            return {
+                price_data: {
+                    currency: exchange.exchange.name ? exchange.exchange.name?.toLowerCase() : 'thb',
+                    product_data : {
+                        name: cart.title
+                    },
+                    unit_amount: cart.price
+                },
+                quantity: cart.choose_count
+            }
+        })
+
+        console.log(formatCheckout);
+        const payload: any = {
+            line_items : formatCheckout
         }
-    }, []);
+        
 
+        try {
+            const response = await fetch(`${baseURL}/checkout`, {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                method: "POST",
+                body: JSON.stringify(payload)
+            }).then(res => res.json())
+            .then((data : any) => {
+                console.log(data);
+                
+                if(data.data){
+                    window.location.replace(data.data)
+                }
 
+                return data
+            });
+        } catch (e) {
+            console.error('Checkout error', e);
+        }
+    }
+    
 
     return (
         <Suspense fallback={<Loading />}>
@@ -140,10 +181,12 @@ const page = () => {
                                                                     <p className=" select-none p-[10px] flex items-center justify-center">{cart.choose_count}</p>
                                                                     <div className=" flex flex-col items-center justify-center gap-1">
                                                                         <MdKeyboardArrowUp onClick={() => {
-                                                                            dispatch(addCartCount({ id: cart.id }))
+                                                                            dispatch(addCartCount({ id: cart.id }));
+                                                                            dispatch(total(["price","promotionPrice", "choose_count"]))
                                                                         }} className=" cursor-pointer active:text-primary focus:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
                                                                         <MdKeyboardArrowDown onClick={() => {
-                                                                            dispatch(reduceCartCount({ id: cart.id }))
+                                                                            dispatch(reduceCartCount({ id: cart.id }));
+                                                                            dispatch(total(["price","promotionPrice", "choose_count"]))
                                                                         }} className=" cursor-pointer active:text-primary focus:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
                                                                     </div>
                                                                 </div>
@@ -175,13 +218,13 @@ const page = () => {
                                     <div className=" bg-white p-[20px] h-[260px]">
                                         <div className=" flex items-center justify-between">
                                             <h1 className=" text-base font-bold">Subtotal</h1>
-                                            <h3 className=" text-red-500 font-bold">$ {price}</h3>
+                                            <h3 className=" text-red-500 font-bold">$ {cart.totalPrice * cart.totalQty}</h3>
                                         </div>
 
                                         <button className=" w-full h-[50px] mt-[25px] text-xl font-bold text-primary border-2 border-primary flex items-center justify-center ">
-                                            You've saved ${price - promoPrice} so far
+                                            You've saved ${(cart.totalPrice - cart.totalSellPrice) * cart.totalQty} so far
                                         </button>
-                                        <button onClick={() => router.push('/checkout')} className=" w-full h-[50px] mt-[20px] text-xl font-bold uppercase text-white bg-green-500 flex items-center justify-center">
+                                        <button onClick={checkout} className=" w-full h-[50px] mt-[20px] text-xl font-bold uppercase text-white bg-green-500 flex items-center justify-center">
                                             checkout now
                                         </button>
                                         <div className=" w-full h-[1px] bg-[#B9B8B9] mt-[20px]"></div>
