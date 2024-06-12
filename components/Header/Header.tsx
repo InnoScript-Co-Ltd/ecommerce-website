@@ -117,7 +117,7 @@ const Header = () => {
                 </li>
               </ul>
 
-              <div className=' translate-x-10'>
+              <div className=' lg:-translate-x-14 xl:-translate-x-16'>
                 <NextLink href={'/'}>
                   <Image src={Logo} alt="WinKhin Logo" />
                 </NextLink>
@@ -129,7 +129,7 @@ const Header = () => {
 
           <div className=' flex justify-end items-center'>
 
-            <ul className=' flex justify-start items-center gap-7 font-bold text-[16px] leading-3'>
+            <ul className=' w-full flex justify-start items-center gap-7 font-bold text-[16px] leading-3'>
               <li>
                 <NextLink className={` cursor-pointer ${pathName === '/about' ? 'link-active' : ''}`} href={'/about'}>About</NextLink>
               </li>

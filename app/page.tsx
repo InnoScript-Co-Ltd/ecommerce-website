@@ -35,7 +35,6 @@ const Page = () => {
         const updatedProducts = await Promise.all(
           products.data.map(async (product: PRODUCT) => {
             const blurData = await dynamicBlurDataUrl(product.bg_image.image);
-            console.log(`Blur data for ${product.bg_image.image}: ${blurData}`);
             return { ...product, blurData };
           })
         );
