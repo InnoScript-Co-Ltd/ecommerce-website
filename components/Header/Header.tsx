@@ -117,9 +117,9 @@ const Header = () => {
                 </li>
               </ul>
 
-              <div className=' lg:-translate-x-3 xl:translate-x-16'>
+              <div className=' lg:-translate-x-14 xl:-translate-x-16'>
                 <NextLink href={'/'}>
-                  <p className=' uppercase font-semibold xl:text-lg'>Lady from Burma</p>
+                  <Image src={Logo} alt="WinKhin Logo" priority={true} />
                 </NextLink>
               </div>
 
@@ -129,7 +129,7 @@ const Header = () => {
 
           <div className=' flex justify-end items-center'>
 
-            <ul className=' flex justify-start items-center gap-7 font-bold text-[16px] leading-3'>
+            <ul className=' w-full flex justify-start items-center gap-7 font-bold text-[16px] leading-3'>
               <li>
                 <NextLink className={` cursor-pointer ${pathName === '/about' ? 'link-active' : ''}`} href={'/about'}>About</NextLink>
               </li>
@@ -217,7 +217,7 @@ const Header = () => {
 
         <div>
           <NextLink href={'/'}>
-            <Image src={Logo} alt="WinKhin Logo" />
+            <Image src={Logo} alt="WinKhin Logo" priority={true} />
           </NextLink>
         </div>
 

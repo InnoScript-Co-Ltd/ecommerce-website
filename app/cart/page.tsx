@@ -149,7 +149,7 @@ const page = () => {
                                                                                     className=" w-full lg:w-[200px] h-[400px] lg:h-[200px] relative"
                                                                                 >
                                                                                     <Image
-                                                                                        src={`${endpoints.image}/${image.image}`}
+                                                                                        src={`${endpoints.image}/${image}`}
                                                                                         alt="cart photo"
                                                                                         loading="lazy"
                                                                                         quality={100}

@@ -10,6 +10,7 @@ export default function Loading() {
             alt="loading"
             width={100}
             height={100}
+            priority={true}
             className=" absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]"
             />
 
