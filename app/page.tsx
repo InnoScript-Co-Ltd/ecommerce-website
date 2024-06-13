@@ -70,17 +70,19 @@ const Page = () => {
               alt={`product_women_image`}
               width={0}
               height={0}
-              layout="responsive"
-              objectFit="cover"
-              className="w-full h-full"
+              className="w-full !h-[600px]  md:h-full"
               quality="100"
-              // loading="lazy"
+              objectFit="fill"
+              objectPosition={"center"}
+              layout="responsive"
+              loading="lazy"
               placeholder="blur"
               blurDataURL={product.blurData}
+              unoptimized
             />
-            <div className="w-full md:w-[600px] lg:w-[800px] h-[300px] px-[10px] md:px-0 absolute top-[70%] left-[0%] md:left-[10%] -translate-x-[0%] -translate-y-[50%] text-white">
-              <h1 className="font-bold text-[25px] md:text-[35px] text-wrap leading-3 md:leading-[59px]">{product.title}</h1>
-              <p className="mt-3 font-normal text-[18px] md:text-[30px] leading-5 md:leading-[30px]">{product.description}</p>
+            <div className="w-full md:w-[600px] lg:w-[800px] h-[300px] px-[30px] md:px-[20px] absolute top-[70%] left-[0%] md:left-[10%] -translate-x-[0%] -translate-y-[50%] text-white">
+              <h1 className="font-bold text-[25px] md:text-[35px] text-wrap">{product.title}</h1>
+              <p className=" text-[18px] md:text-[30px] font-medium">{product.description?.length > 150 ? product.description.substring(0,150)+"..." : product.description}</p>
               <NextLink
                 href={{
                   pathname: `/woman/detail`,

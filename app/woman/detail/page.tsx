@@ -56,6 +56,7 @@ const shopDetail = ({
 
     const [loading, setLoading] = useState<boolean>(false);
     const [productDetail, setProductDetail] = useState<PRODUCT_DETAIL>();
+    const [media, setMedia] = useState<boolean>(false);
     const router = useRouter();
 
     const getProductDetail = useCallback(async () => {
@@ -87,7 +88,12 @@ const shopDetail = ({
         getProductDetail()
     }, [getProductDetail]);
 
-    console.log(productDetail);
+    useEffect(() => {
+        if(typeof window !== "undefined") {
+            const mediaQuery = window.matchMedia('(max-width: 600px)');
+            setMedia(mediaQuery.matches);
+        }
+    }, [])
     
 
 
@@ -118,7 +124,7 @@ const shopDetail = ({
                                 height={0}
                                 layout="responsive"
                                 objectFit="cover"
-                                className=" w-full h-full"
+                                className={`w-full ${media ? '!h-[600px]' : '!h-full'}`}
                                 quality="100"
                                 loading={"lazy"}
                                 placeholder="blur"
@@ -173,7 +179,7 @@ const shopDetail = ({
                                 height={0}
                                 layout="responsive"
                                 objectFit="cover"
-                                className=" w-full h-full"
+                                className={`w-full ${media ? '!h-[600px]' : '!h-full'}`}
                                 quality="100"
                                 loading={"lazy"}
                                 placeholder="blur"
@@ -225,7 +231,8 @@ const shopDetail = ({
                                     src={`${endpoints.image}/${productDetail?.footer_left.image}`}
                                     alt={`product_detail_footer_left`}
                                     fill={true}
-                                    quality="100"
+                                    className={`${media ? '!h-[600px]' : '!h-full'}`}
+                                    quality={100}
                                     loading="lazy"
                                     placeholder="blur"
                                     blurDataURL={productDetail.footerLeftBgDataUrl}
@@ -239,7 +246,8 @@ const shopDetail = ({
                                     src={`${endpoints.image}/${productDetail?.footer_right.image}`}
                                     alt={`product_detail_footer_right`}
                                     fill={true}
-                                    quality="100"
+                                    className={` ${media ? '!h-[600px]' : '!h-full'}`}
+                                    quality={100}
                                     loading="lazy"
                                     placeholder="blur"
                                     blurDataURL={productDetail.footerRightBgDataUrl}

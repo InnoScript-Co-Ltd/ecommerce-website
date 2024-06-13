@@ -119,7 +119,7 @@ const Header = () => {
 
               <div className=' lg:-translate-x-14 xl:-translate-x-16'>
                 <NextLink href={'/'}>
-                  <Image src={Logo} alt="WinKhin Logo" />
+                  <Image src={Logo} alt="WinKhin Logo" priority={true} />
                 </NextLink>
               </div>
 
@@ -217,7 +217,7 @@ const Header = () => {
 
         <div>
           <NextLink href={'/'}>
-            <Image src={Logo} alt="WinKhin Logo" />
+            <Image src={Logo} alt="WinKhin Logo" priority={true} />
           </NextLink>
         </div>
 
