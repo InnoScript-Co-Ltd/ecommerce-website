@@ -64,7 +64,7 @@ const page = () => {
                         name: cart.title,
                         images: [`${endpoints.image}/${cart.image[0]}`]
                     },
-                    unit_amount: Number(cart.price)
+                    unit_amount: Number(cart.price) * 100
                 },
                 quantity: cart.choose_count
             }
@@ -89,7 +89,7 @@ const page = () => {
 
                     if (data.data) {
                         setLoading(false)
-                        // window.location.replace(data.data)
+                        window.location.replace(data.data)
                     }
 
                     return data

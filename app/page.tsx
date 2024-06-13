@@ -96,8 +96,8 @@ const Page = () => {
       <div className="backdrop-blur-xl bg-white/30">
         {
           loading === false && video && (
-            <div className=" w-full min-h-[600px] relative">
-              <video className=" w-full h-full" autoPlay={true}>
+            <div className=" w-full h-auto md:min-h-[600px] relative">
+              <video className=" !w-full !h-auto" autoPlay={true}>
                 <source src={`${endpoints.image}/${video.file_name}`} type="video/mp4" />
               </video>
               <h2 className=" absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-2xl font-semibold text-white">{video.title}</h2>

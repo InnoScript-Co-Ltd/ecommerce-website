@@ -33,7 +33,7 @@ const page = () => {
     const getProduct = useCallback(async () => {
         if (debouncedSearch) {
             setLoading(true);
-            const result: any = await fetch(`${baseURL}${endpoints.product}?search=${debouncedSearch}`);
+            const result: any = await fetch(`${baseURL}${endpoints.product}?search=${search}`);
             const response: any = await result.json();
 
             if (response.data) {
@@ -69,7 +69,10 @@ const page = () => {
 
             <div className=" container">
                 <div className=" flex items-center justify-start gap-10">
-                    <span className=" cursor-pointer">
+                    <span onClick={() => {
+                        setSearch("");
+                        getProduct();
+                    }} className=" cursor-pointer">
                         <FaArrowLeftLong size={20} />
                     </span>
                     <div className=" w-full relative">
