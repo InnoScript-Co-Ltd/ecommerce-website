@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "NODE_ENV=production node server.js",
-    "lint": "next lint"
+    "lint": "next lint",
+    "serve": "node stripe.js"
   },
   "browser": {
     "child_process": false

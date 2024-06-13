@@ -104,7 +104,7 @@ const page = () => {
                                             layout={'cover'}
                                             objectFit="cover"
                                             unoptimized
-                                            className=" w-full h-[300px]"
+                                            className=" w-full h-[200px] rounded-lg"
                                             placeholder="blur"
                                             blurDataURL={product.blurData}
                                         />
@@ -113,7 +113,7 @@ const page = () => {
                                         <h1 className=" text-xl font-bold ">{product.title}</h1>
                                         <p className=" text-lg text-gray">{product.description.length > 100 ? product.description.substring(0, 100) + '...' : product.description}</p>
 
-                                        <div className=" w-full mt-auto">
+                                        <div className=" w-full">
                                             <Link
                                                 href={{
                                                     pathname: `/${product.man_or_woman === "WOMAN" ? "woman" : "man"}/detail`,
@@ -123,7 +123,7 @@ const page = () => {
                                                     }
                                                 }}
                                             >
-                                                <DoubleArrowRightIcon width={30} height={30} className=" block ml-auto" />
+                                                <DoubleArrowRightIcon width={30} height={30} className=" block ml-auto mt-auto" />
                                             </Link>
                                         </div>
                                     </div>
