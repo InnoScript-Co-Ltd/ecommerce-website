@@ -4,13 +4,23 @@ import { keys } from '@/constant/key';
 
 interface cartState {
     cart: Array<any>;
+    totalPrice: number;
+    totalSellPrice: number;
+    totalQty: number
 }
 
 const cartLocal = typeof window !== 'undefined' && typeof document !== 'undefined' && localStorage.getItem(keys.CART);
 
 export const initialState: cartState = {
-    cart: cartLocal ? JSON.parse(cartLocal!) : []
+    cart: cartLocal ? JSON.parse(cartLocal!) : [],
+    totalPrice: 0,
+    totalSellPrice: 0,
+    totalQty: 0
 };
+
+function sumPrices(cart: any, priceType: string) {
+    return cart.reduce((sum: any, current: any) => sum + parseFloat(current[priceType] || 0), 0);
+}
 
 export const cartSlice = createSlice({
     name: 'cart',
@@ -87,12 +97,17 @@ export const cartSlice = createSlice({
                 }
             });
             localStorage.setItem(keys.CART, JSON.stringify(state.cart));
+        },
+        total: (state, action: PayloadAction<Array<"price" | "promotionPrice" | "choose_count">>) => {
+            state.totalPrice = sumPrices(state.cart, action.payload[0]);
+            state.totalSellPrice = sumPrices(state.cart, action.payload[1]);
+            state.totalQty = sumPrices(state.cart, action.payload[2]);
         }
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { addCart, removeCart, reduceCartCount, addCartCount, Color, Size } = cartSlice.actions
+export const { addCart, removeCart, reduceCartCount, addCartCount, Color, Size, total } = cartSlice.actions
 
 export const cartState = (state: RootState) => state.cart;
 
