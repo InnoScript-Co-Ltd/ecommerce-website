@@ -55,14 +55,14 @@ const Page = () => {
       const products = await response.json();
 
       if (products.data) {
-        const updatedProducts = await Promise.all(
-          products.data.map(async (product: PRODUCT) => {
-            const blurData = await dynamicBlurDataUrl(product.bg_image.image);
-            return { ...product, blurData };
-          })
-        );
+        // const updatedProducts = await Promise.all(
+        //   products.data.map(async (product: PRODUCT) => {
+        //     const blurData = await dynamicBlurDataUrl(product.bg_image.image);
+        //     return { ...product, blurData };
+        //   })
+        // );
 
-        setProductLists(updatedProducts);
+        setProductLists(products.data);
       } else {
         setProductLists([]);
       }
@@ -120,8 +120,8 @@ const Page = () => {
               objectFit="fill"
               objectPosition={"center"}
               layout="responsive"
-              placeholder="blur"
-              blurDataURL={product.blurData}
+              // placeholder="blur"
+              // blurDataURL={product.blurData}
               unoptimized
             />
             <div className="w-full md:w-[600px] lg:w-[800px] h-[300px] px-[30px] md:px-[20px] absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-white">

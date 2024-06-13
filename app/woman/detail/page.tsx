@@ -67,13 +67,13 @@ const shopDetail = ({
             const data = await response.json();
             if (data.data[0]) {
 
-                const headerBgDataUrl = await dynamicBlurDataUrl(data.data[0].header_bg.image);
-                const showcaseBgDataUrl = await dynamicBlurDataUrl(data.data[0].showcase_bg.image);
-                const footerLeftBgDataUrl = await dynamicBlurDataUrl(data.data[0].footer_left.image);
-                const footerRightBgDataUrl = await dynamicBlurDataUrl(data.data[0].footer_right.image);
-                const addDataUrl = { ...data.data[0], headerBgDataUrl, showcaseBgDataUrl, footerLeftBgDataUrl, footerRightBgDataUrl };
+                // const headerBgDataUrl = await dynamicBlurDataUrl(data.data[0].header_bg.image);
+                // const showcaseBgDataUrl = await dynamicBlurDataUrl(data.data[0].showcase_bg.image);
+                // const footerLeftBgDataUrl = await dynamicBlurDataUrl(data.data[0].footer_left.image);
+                // const footerRightBgDataUrl = await dynamicBlurDataUrl(data.data[0].footer_right.image);
+                // const addDataUrl = { ...data.data[0], headerBgDataUrl, showcaseBgDataUrl, footerLeftBgDataUrl, footerRightBgDataUrl };
 
-                setProductDetail(addDataUrl);
+                setProductDetail(data.data[0]);
                 setLoading(false);
             } else {
                 setLoading(false);
@@ -127,8 +127,8 @@ const shopDetail = ({
                                 objectFit="cover"
                                 className={`w-full ${media ? '!h-[600px]' : '!h-full'}`}
                                 quality="100"
-                                placeholder="blur"
-                                blurDataURL={productDetail.headerBgDataUrl}
+                                // placeholder="blur"
+                                // blurDataURL={productDetail.headerBgDataUrl}
                             />
                         )
                     }
@@ -186,8 +186,8 @@ const shopDetail = ({
                                 className={`w-full ${media ? '!h-[600px]' : '!h-full'}`}
                                 quality="100"
                                 priority
-                                placeholder="blur"
-                                blurDataURL={productDetail.showcaseBgDataUrl}
+                                // placeholder="blur"
+                                // blurDataURL={productDetail.showcaseBgDataUrl}
                             />
                         )
                     }
@@ -242,8 +242,8 @@ const shopDetail = ({
                                     className={`${media ? '!h-[600px]' : '!h-full'}`}
                                     quality={100}
                                     priority
-                                    placeholder="blur"
-                                    blurDataURL={productDetail.footerLeftBgDataUrl}
+                                    // placeholder="blur"
+                                    // blurDataURL={productDetail.footerLeftBgDataUrl}
                                 />
                             )
                         }
@@ -261,8 +261,8 @@ const shopDetail = ({
                                     className={` ${media ? '!h-[600px]' : '!h-full'}`}
                                     quality={100}
                                     priority
-                                    placeholder="blur"
-                                    blurDataURL={productDetail.footerRightBgDataUrl}
+                                    // placeholder="blur"
+                                    // blurDataURL={productDetail.footerRightBgDataUrl}
                                 />
                             )
                         }

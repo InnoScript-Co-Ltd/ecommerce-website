@@ -36,14 +36,14 @@ const shop = () => {
         const products = await response.json();
         if (products.data) {
 
-            const updatedMenProducts = await Promise.all(
-                products.data.map(async (product: PRODUCT) => {
-                    const blurData = await dynamicBlurDataUrl(product.bg_image.image);
-                    return { ...product, blurData }
-                })
-            )
+            // const updatedMenProducts = await Promise.all(
+            //     products.data.map(async (product: PRODUCT) => {
+            //         const blurData = await dynamicBlurDataUrl(product.bg_image.image);
+            //         return { ...product, blurData }
+            //     })
+            // )
 
-            setProductLists(updatedMenProducts);
+            setProductLists(products.data);
             setLoading(false);
         } else {
             setLoading(false);
@@ -86,8 +86,6 @@ const shop = () => {
                                     objectFit="fill"
                                     objectPosition={"center"}
                                     layout="responsive"
-                                    placeholder="blur"
-                                    blurDataURL={product.blurData}
                                     unoptimized
                                 />
 

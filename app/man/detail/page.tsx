@@ -72,13 +72,13 @@ const shopDetail = ({
             const data = await response.json();
             if (data.data[0]) {
 
-                const headerBgDataUrl = await dynamicBlurDataUrl(data.data[0].header_bg.image);
-                const showcaseBgDataUrl = await dynamicBlurDataUrl(data.data[0].showcase_bg.image);
-                const footerLeftBgDataUrl = await dynamicBlurDataUrl(data.data[0].footer_left.image);
-                const footerRightBgDataUrl = await dynamicBlurDataUrl(data.data[0].footer_right.image);
-                const addDataUrl = { ...data.data[0], headerBgDataUrl, showcaseBgDataUrl, footerLeftBgDataUrl, footerRightBgDataUrl };
+                // const headerBgDataUrl = await dynamicBlurDataUrl(data.data[0].header_bg.image);
+                // const showcaseBgDataUrl = await dynamicBlurDataUrl(data.data[0].showcase_bg.image);
+                // const footerLeftBgDataUrl = await dynamicBlurDataUrl(data.data[0].footer_left.image);
+                // const footerRightBgDataUrl = await dynamicBlurDataUrl(data.data[0].footer_right.image);
+                // const addDataUrl = { ...data.data[0], headerBgDataUrl, showcaseBgDataUrl, footerLeftBgDataUrl, footerRightBgDataUrl };
 
-                setProductDetail(addDataUrl);
+                setProductDetail(data.data[0]);
                 setLoading(false);
             } else {
                 setLoading(false);
@@ -132,8 +132,8 @@ const shopDetail = ({
                                 className={`w-full ${media ? '!h-[600px]' : '!h-full'}`}
                                 quality={100}
                                 priority
-                                placeholder="blur"
-                                blurDataURL={productDetail && productDetail?.headerBgDataUrl}
+                                // placeholder="blur"
+                                // blurDataURL={productDetail && productDetail?.headerBgDataUrl}
                             />
                         )
                     }
@@ -191,8 +191,8 @@ const shopDetail = ({
                                 className=" w-full h-full"
                                 quality={100}
                                 priority
-                                placeholder="blur"
-                                blurDataURL={productDetail && productDetail.showcaseBgDataUrl}
+                                // placeholder="blur"
+                                // blurDataURL={productDetail && productDetail.showcaseBgDataUrl}
                             />
                         )
                     }
@@ -246,8 +246,8 @@ const shopDetail = ({
                                     fill={true}
                                     quality={100}
                                     priority
-                                    placeholder="blur"
-                                    blurDataURL={productDetail && productDetail.footerLeftBgDataUrl}
+                                    // placeholder="blur"
+                                    // blurDataURL={productDetail && productDetail.footerLeftBgDataUrl}
                                 />
                             )
                         }
@@ -264,8 +264,8 @@ const shopDetail = ({
                                     fill={true}
                                     quality={100}
                                     priority
-                                    placeholder="blur"
-                                    blurDataURL={productDetail && productDetail.footerRightBgDataUrl}
+                                    // placeholder="blur"
+                                    // blurDataURL={productDetail && productDetail.footerRightBgDataUrl}
                                 />
                             )
                         }

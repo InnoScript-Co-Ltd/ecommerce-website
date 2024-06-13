@@ -137,21 +137,22 @@ const page = ({
       const data = await response.json();
       if (data.data) {
 
-        const updateDetailImage = await Promise.all(
-          data.data.detail_images.map(async (image: any) => {
-            const blurData = await dynamicBlurDataUrl(image)
-            return {
-              image: image,
-              blurData: blurData
-            }
-          })
-        );
-        setDetailImage(updateDetailImage)
+        // const updateDetailImage = await Promise.all(
+        //   data.data.detail_images.map(async (image: any) => {
+        //     const blurData = await dynamicBlurDataUrl(image)
+        //     return {
+        //       image: image,
+        //       blurData: blurData
+        //     }
+        //   })
+        // );
+        // setDetailImage(updateDetailImage)
+        setDetailImage(data.data.detail_images)
 
-        const productBlurData = await dynamicBlurDataUrl(data.data.product.bg_image.image);
+        // const productBlurData = await dynamicBlurDataUrl(data.data.product.bg_image.image);
 
 
-        setItem({ ...data.data, productBlurData });
+        setItem(data.data);
         setLoading(false);
       } else {
         setLoading(false);
@@ -193,9 +194,6 @@ const page = ({
     }
   }, [cartLists.cart, item]);
 
-  console.log(detailImage);
-
-
 
   useEffect(() => {
     if (favState.fav.length > 0) {
@@ -225,209 +223,209 @@ const page = ({
         )
       }
 
-      <div className=" grid grid-cols-5 px-[10px] lg:px-[50px] mt-[50px]">
-        <div className="col-span-5 md:col-span-1 col-start-1">
+      {
+        loading === false && item !== null && item !== undefined && (
+          <div className=" grid grid-cols-5 px-[10px] lg:px-[50px] mt-[50px]">
+            <div className="col-span-5 md:col-span-1 col-start-1">
 
-          <div className="w-full h-full flex flex-col relative">
-            {
-              loading === false && detailImage?.slice(0, 4).map((image: any, index: number) => {
-                return (
-                  <Image
-                    key={index}
-                    priority
-                    src={`${endpoints.image}/${image.image}`}
-                    alt="listing image"
-                    width={0}
-                    height={0}
-                    objectFit="cover"
-                    unoptimized
-                    className={`w-full ${media ? '!h-[600px]' : '!h-[200px]'}`}
-                    placeholder="blur"
-                    blurDataURL={image.blurData}
-                  />
-                )
-              })
-            }
-          </div>
-
-
-        </div>
-        <div className="col-span-5 md:col-span-2 col-start-1 md:col-start-2 relative">
-
-          <Carousel
-            opts={{
-              loop: true
-            }}
-            className=" w-full h-[800px] relative"
-          >
-            <CarouselContent>
-              {
-                detailImage?.map((image: any, index: number) => (
-                  <CarouselItem
-                    key={index}
-                    className=" w-full h-full"
-                  >
-                    <Image
-                      src={`${endpoints.image}/${image.image}`}
-                      alt="detail image"
-                      width={0}
-                      height={0}
-                      priority
-                      objectFit="contain"
-                      className={`w-full ${media ? '!h-[600px]' : '!h-[800px]'}`}
-                      placeholder="blur"
-                      unoptimized
-                      blurDataURL={image.blurData}
-                    />
-                  </CarouselItem>
-                ))
-              }
-            </CarouselContent>
-            <CarouselPrevious className=" absolute left-5 top-[50%] translate-x-0 -translate-y-[50%]" />
-            <CarouselNext className=" absolute right-5 top-[50%] translate-x-0 -translate-y-[50%]" />
-          </Carousel>
+              <div className="w-full h-full flex flex-col relative">
+                {
+                  loading === false && detailImage?.slice(0, 4).map((image: any, index: number) => {
+                    return (
+                      <Image
+                        key={index}
+                        priority
+                        src={`${endpoints.image}/${image}`}
+                        alt="listing image"
+                        width={0}
+                        height={0}
+                        objectFit="cover"
+                        unoptimized
+                        className={`w-full ${media ? '!h-[600px]' : '!h-[200px]'}`}
+                      />
+                    )
+                  })
+                }
+              </div>
 
 
-        </div>
-        <div className="col-span-5 md:col-span-2 p-5">
-          <h1 className=" text-2xl font-bold">{item?.title}</h1>
-          {mounted && (
-            <div className=" flex items-center justify-start gap-3 my-3">
-              <p className=" line-through font-bold text-xl text-grey">${exchange.exchange.rate ? (item?.sell_price * exchange.exchange.rate) : item?.sell_price}</p>
-              <span className=" text-red-500 font-bold text-xl">${exchange.exchange.rate ? (item?.promotion_price * exchange.exchange.rate) : item?.promotion_price}</span>
             </div>
-          )}
-          {/* color  */}
-          <h3 className=" font-semibold text-lg">Color</h3>
-          <div className=" flex flex-wrap items-center justify-start gap-3">
-            {
-              item?.color.length > 0 && JSON.parse(item?.color).split(',')?.map((color: string, index: number) => {
+            <div className="col-span-5 md:col-span-2 col-start-1 md:col-start-2 relative">
 
-                return (
-                  <div
-                    key={`color_${index}`}
-                    style={{
-                      width: '35px',
-                      height: '35px',
-                      color: 'white',
-                      background: color,
-                      borderRadius: '50%',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      cursor: 'pointer'
-                    }}
-                    onClick={() => {
-                      setSelectColor(color);
-                      setChoose({ ...choose, color: color });
-                      dispatch(Color({
-                        id: item?.id,
-                        color: color
-                      }));
-                    }}
-                    className=" font-bold active:scale-110 active:shadow transition-all duration-300 ease-in"
-                  >
-                    {color === selectColor && (
-                      <FaCheck fontSize={20} />
-                    )}
-                  </div>
-                )
-              })
-            }
-          </div>
+              <Carousel
+                opts={{
+                  loop: true
+                }}
+                className=" w-full h-[800px] relative"
+              >
+                <CarouselContent>
+                  {
+                    detailImage?.map((image: any, index: number) => (
+                      <CarouselItem
+                        key={index}
+                        className=" w-full h-full"
+                      >
+                        <Image
+                          src={`${endpoints.image}/${image}`}
+                          alt="detail image"
+                          width={0}
+                          height={0}
+                          priority
+                          objectFit="contain"
+                          className={`w-full ${media ? '!h-[600px]' : '!h-[800px]'}`}
+                          unoptimized
+                        />
+                      </CarouselItem>
+                    ))
+                  }
+                </CarouselContent>
+                <CarouselPrevious className=" absolute left-5 top-[50%] translate-x-0 -translate-y-[50%]" />
+                <CarouselNext className=" absolute right-5 top-[50%] translate-x-0 -translate-y-[50%]" />
+              </Carousel>
 
-          {/* size */}
-          <h3 className=" font-semibold text-lg text-gray mt-3">Size</h3>
-          <div className=" flex flex-wrap items-center justify-start gap-3">
-            {
 
-              sizeLists.length > 0 && sizeLists?.map((size, index) => {
-                return (
-                  <div
-                    key={`size_${index}`}
-                    onClick={() => {
-                      setSelectSize(size)
-                      setChoose({ ...choose, size: size })
-                      dispatch(Size({
-                        id: item?.id,
-                        size: size
-                      }))
-                    }}
-                    className={`${size === selectSize ? ' bg-black text-white font-bold shadow' : ''} w-[40px] h-[40px] border border-black rounded-sm uppercase flex items-center justify-center transition-all duration-300 ease-in cursor-pointer`}
-                  >
-                    {size}
-                  </div>
-                )
-              })
-            }
-          </div>
+            </div>
+            <div className="col-span-5 md:col-span-2 p-5">
+              <h1 className=" text-2xl font-bold">{item?.title}</h1>
+              {mounted && (
+                <div className=" flex items-center justify-start gap-3 my-3">
+                  <p className=" line-through font-bold text-xl text-grey">${exchange.exchange.rate ? (item?.sell_price * exchange.exchange.rate) : item?.sell_price}</p>
+                  <span className=" text-red-500 font-bold text-xl">${exchange.exchange.rate ? (item?.promotion_price * exchange.exchange.rate) : item?.promotion_price}</span>
+                </div>
+              )}
+              {/* color  */}
+              <h3 className=" font-semibold text-lg">Color</h3>
+              <div className=" flex flex-wrap items-center justify-start gap-3">
+                {
+                  item?.color.length > 0 && JSON.parse(item?.color).split(',')?.map((color: string, index: number) => {
 
-          <div className=" flex items-center justify-start gap-2 mt-3">
-            <Image
-              loading="lazy"
-              src={ruler}
-              alt="ruler icon"
-              style={{
-                width: '12px',
-                height: '14px',
-              }}
-            />
-            <p className=" uppercase text-gray">Size Guid</p>
-          </div>
+                    return (
+                      <div
+                        key={`color_${index}`}
+                        style={{
+                          width: '35px',
+                          height: '35px',
+                          color: 'white',
+                          background: color,
+                          borderRadius: '50%',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => {
+                          setSelectColor(color);
+                          setChoose({ ...choose, color: color });
+                          dispatch(Color({
+                            id: item?.id,
+                            color: color
+                          }));
+                        }}
+                        className=" font-bold active:scale-110 active:shadow transition-all duration-300 ease-in"
+                      >
+                        {color === selectColor && (
+                          <FaCheck fontSize={20} />
+                        )}
+                      </div>
+                    )
+                  })
+                }
+              </div>
 
-          <div className=" flex items-center justify-between md:justify-start gap-2 mt-5 select-none">
-            <div className=" flex items-center justify-start gap-2">
-              <p>{choose.count}</p>
-              <div className=" flex flex-col items-center justify-center gap-1">
-                <MdKeyboardArrowUp onClick={() => {
-                  if (cartLists.cart.length > 0) {
-                    cartLists.cart.map((cart) => {
-                      if (cart.id === item?.id) {
-                        dispatch(addCartCount({ id: item?.id }))
+              {/* size */}
+              <h3 className=" font-semibold text-lg text-gray mt-3">Size</h3>
+              <div className=" flex flex-wrap items-center justify-start gap-3">
+                {
+
+                  sizeLists.length > 0 && sizeLists?.map((size, index) => {
+                    return (
+                      <div
+                        key={`size_${index}`}
+                        onClick={() => {
+                          setSelectSize(size)
+                          setChoose({ ...choose, size: size })
+                          dispatch(Size({
+                            id: item?.id,
+                            size: size
+                          }))
+                        }}
+                        className={`${size === selectSize ? ' bg-black text-white font-bold shadow' : ''} w-[40px] h-[40px] border border-black rounded-sm uppercase flex items-center justify-center transition-all duration-300 ease-in cursor-pointer`}
+                      >
+                        {size}
+                      </div>
+                    )
+                  })
+                }
+              </div>
+
+              <div className=" flex items-center justify-start gap-2 mt-3">
+                <Image
+                  loading="lazy"
+                  src={ruler}
+                  alt="ruler icon"
+                  style={{
+                    width: '12px',
+                    height: '14px',
+                  }}
+                />
+                <p className=" uppercase text-gray">Size Guid</p>
+              </div>
+
+              <div className=" flex items-center justify-between md:justify-start gap-2 mt-5 select-none">
+                <div className=" flex items-center justify-start gap-2">
+                  <p>{choose.count}</p>
+                  <div className=" flex flex-col items-center justify-center gap-1">
+                    <MdKeyboardArrowUp onClick={() => {
+                      if (cartLists.cart.length > 0) {
+                        cartLists.cart.map((cart) => {
+                          if (cart.id === item?.id) {
+                            dispatch(addCartCount({ id: item?.id }))
+                          } else {
+                            addCount();
+                          }
+                        })
                       } else {
                         addCount();
                       }
-                    })
-                  } else {
-                    addCount();
-                  }
 
-                }} className=" cursor-pointer active:text-primary active:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
-                <MdKeyboardArrowDown onClick={() => {
-                  if (cartLists.cart.length > 0) {
-                    dispatch(reduceCartCount({ id: item?.id }))
-                  }
-                }} className=" cursor-pointer active:text-primary active:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
+                    }} className=" cursor-pointer active:text-primary active:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
+                    <MdKeyboardArrowDown onClick={() => {
+                      if (cartLists.cart.length > 0) {
+                        dispatch(reduceCartCount({ id: item?.id }))
+                      }
+                    }} className=" cursor-pointer active:text-primary active:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
+                  </div>
+                </div>
+
+                <button
+                  onClick={addToCart}
+                  className=" bg-green-500 active:scale-105 active:shadow-lg text-white w-[200px] h-[50px] grid items-center transition-all duration-300 ease-in"
+                >
+                  Add To Bag
+                </button>
+
+                <button
+                  className={`${selectFav ? 'text-white bg-red-500 border-none' : 'border border-black'} w-[50px] h-[50px] grid items-center justify-center rounded-sm `}
+                  onClick={() => {
+                    dispatch(addFav(item))
+                  }}
+                >
+                  <HeartIcon width={'20px'} height={'20px'} />
+                </button>
+
               </div>
+
+              <button onClick={() => router.push('/cart')} className=" w-full lg:w-[300px] h-[50px] mt-3 active:scale-105 active:shadow-lg border border-black flex items-center justify-center transition-all duration-300 ease-in">
+                Checkout Now
+              </button>
+
+
+
             </div>
 
-            <button
-              onClick={addToCart}
-              className=" bg-green-500 active:scale-105 active:shadow-lg text-white w-[200px] h-[50px] grid items-center transition-all duration-300 ease-in"
-            >
-              Add To Bag
-            </button>
-
-            <button
-              className={`${selectFav ? 'text-white bg-red-500 border-none' : 'border border-black'} w-[50px] h-[50px] grid items-center justify-center rounded-sm `}
-              onClick={() => {
-                dispatch(addFav(item))
-              }}
-            >
-              <HeartIcon width={'20px'} height={'20px'} />
-            </button>
-
           </div>
-
-          <button onClick={() => router.push('/checkout')} className=" w-full lg:w-[300px] h-[50px] mt-3 active:scale-105 active:shadow-lg border border-black flex items-center justify-center transition-all duration-300 ease-in">
-            Checkout Now
-          </button>
-
-
-
-        </div>
-
-      </div>
+        )
+      }
 
       {
         loading === false && item !== null && item !== undefined && (
@@ -443,8 +441,8 @@ const page = ({
                 className={`w-full ${media ? '!h-[600px]' : '!h-full'}`}
                 quality={100}
                 priority
-                placeholder="blur"
-                blurDataURL={item?.productBlurData}
+                // placeholder="blur"
+                // blurDataURL={item?.productBlurData}
                 unoptimized
               />
 

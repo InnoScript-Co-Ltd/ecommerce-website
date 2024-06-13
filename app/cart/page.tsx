@@ -85,7 +85,6 @@ const page = () => {
                 body: JSON.stringify(payload)
             }).then(res => res.json())
                 .then((data: any) => {
-                    console.log(data);
 
                     if (data.data) {
                         setLoading(false)
@@ -115,7 +114,7 @@ const page = () => {
 
             <div>
                 {
-                    mounted && loading === false && cart.cart.length === 0 ? (
+                    mounted && loading === false && cart?.cart?.length === 0 && (
                         <div className=" bg-[#F1F3F5] h-[300px] flex items-center justify-center">
 
                             <div className=" w-full md:w-[400px]">
@@ -131,7 +130,11 @@ const page = () => {
                             </div>
 
                         </div>
-                    ) : (
+                    ) 
+                }
+
+                {
+                    mounted && loading === false && (
                         <div className=" bg-[#F1F3F5] min-h-[300px] py-5">
 
                             <div className=" px-[30px] md:px-[100px] grid grid-cols-5 gap-3">
@@ -143,7 +146,7 @@ const page = () => {
 
                                         <div>
                                             {
-                                                mounted && cart.cart.length > 0 && cart.cart.map((cart: any, index: number) => {
+                                                mounted && cart?.cart?.length > 0 && cart?.cart?.map((cart: any, index: number) => {
 
                                                     return (
                                                         <div key={index} className=" w-full h-full flex flex-col lg:flex-row items-start justify-start gap-4 mt-4">
@@ -157,7 +160,7 @@ const page = () => {
                                                                 >
                                                                     <CarouselContent>
                                                                         {
-                                                                            cart?.image.map((image: any, index: number) => (
+                                                                            cart?.image?.map((image: any, index: number) => (
                                                                                 <CarouselItem
                                                                                     key={index}
                                                                                     className=" w-full lg:w-[200px] h-[400px] lg:h-[200px] relative"
