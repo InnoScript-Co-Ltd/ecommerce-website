@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Roboto_Condensed } from "next/font/google";
+import { Roboto_Condensed } from "next/font/google";
 import "./globals.css";
 import dynamic from "next/dynamic";
 import StoreProvider from "@/components/Provider/StoreProvider";
@@ -11,7 +11,6 @@ import { Toaster } from "@/components/ui/toaster"
 const Header = dynamic(() => import('@/components/Header/Header'), { ssr: false });
 const Footer = dynamic(() => import("@/components/Footer/Footer"), { ssr: false });
 
-const inter = Inter({ subsets: ["latin"] });
 const roboto_condensed = Roboto_Condensed({ 
   subsets: ['latin'], 
   display: 'swap', 
