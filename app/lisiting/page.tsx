@@ -70,6 +70,7 @@ const page = ({
   const [item, setItem] = useState<ITEM>();
   const [detailImage, setDetailImage] = useState<any>();
   const [selectFav, setSelectFav] = useState<boolean>(false);
+  const [media, setMedia] = useState<boolean>(false);
 
   const cartLists = useAppSelector(state => state.cart);
   const dispatch = useAppDispatch();
@@ -130,12 +131,15 @@ const page = ({
 
         const updateDetailImage = await Promise.all(
           data.data.detail_images.map(async (image : any) => {
-            const blurData = await dynamicBlurDataUrl(image.image)
-            return {...image, blurData};
+            const blurData = await dynamicBlurDataUrl(image)
+            return {
+              image: image,
+              blurData: blurData
+            }
           })
         );
         setDetailImage(updateDetailImage)
-
+        
         const productBlurData = await dynamicBlurDataUrl(data.data.product.bg_image.image);
         
 
@@ -179,7 +183,10 @@ const page = ({
         }
       })
     }
-  }, [cartLists.cart, item])
+  }, [cartLists.cart, item]);
+
+  console.log(detailImage);
+  
   
 
   useEffect(() => {
@@ -192,6 +199,13 @@ const page = ({
     }
 
   }, [favState.fav, item])
+
+  useEffect(() => {
+    if(typeof window !== "undefined") {
+        const mediaQuery = window.matchMedia('(max-width: 600px)');
+        setMedia(mediaQuery.matches);
+    }
+}, [])
   
 
   return (
@@ -213,16 +227,15 @@ const page = ({
                   <Image
                     key={index}
                     loading="lazy"
-                    src={`${endpoints.image}/${image?.image}`}
+                    src={`${endpoints.image}/${image.image}`}
                     alt="listing image"
                     width={0}
                     height={0}
                     objectFit="cover"
                     unoptimized
-                    className=" w-full h-[200px]"
+                    className={`w-full ${media ? '!h-[600px]' : '!h-[200px]'}`}
                     placeholder="blur"
                     blurDataURL={image.blurData}
-                  // sizes="(max-width: 768px) 100%, (max-width: 1200px) 100%, (max-height: 200px) 200px"
                   />
                 )
               })
@@ -247,14 +260,14 @@ const page = ({
                     className=" w-full h-full"
                   >
                     <Image
-                      src={`${endpoints.image}/${image?.image}`}
-                      unoptimized={true}
+                      src={`${endpoints.image}/${image.image}`}
                       alt="detail image"
                       width={0}
                       height={0}
                       objectFit="contain"
-                      className=" w-full h-[800px]"
+                      className={`w-full ${media ? '!h-[600px]' : '!h-[800px]'}`}
                       placeholder="blur"
+                      unoptimized
                       blurDataURL={image.blurData}
                     />
                   </CarouselItem>
@@ -417,20 +430,20 @@ const page = ({
             alt="detail image"
             width={0}
             height={0}
-            layout="responsive"
             objectFit="cover"
-            className=" w-full h-full"
-            quality="100"
+            className={`w-full ${media ? '!h-[600px]' : '!h-full'}`}
+            quality={100}
             loading={"lazy"}
             placeholder="blur"
             blurDataURL={item?.productBlurData}
+            unoptimized
           />
 
-          <div className=" absolute top-[50%] left-[5%] -translate-y-[50%] text-white">
-            <h1 className=" text-[20px] md:text-[45px] font-bold leading-3 md:leading-10">{item?.product.title}</h1>
-            <p className=" text-[18px] md:text-[30px] font-semibold leading-5 md:leading-[30px] pt-3">{item?.product.description}</p>
+          <div className=" absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-white">
+            <h1 className=" text-[20px] md:text-[50px] font-bold text-center">{item?.product.title}</h1>
+            <p className=" text-[14px] md:text-[30px] font-semibold pt-3 text-center">{item?.product.description}</p>
             <button
-              className=" mt-[30px] flex items-center justify-start gap-3 font-bold text-[20px] leading-[24px] transition duration-150 ease-in-out hover:bg-primary-accent-200 hover:shadow-lg active:text-primary active:shadow-md motion-reduce:transition-none"
+              className=" block mt-[30px] mx-auto font-bold text-[20px] border border-white px-3 py-2 rounded-[20px] transition duration-150 ease-in-out hover:bg-primary-accent-200 hover:shadow-lg active:text-primary active:shadow-md motion-reduce:transition-none"
             >
               Explore
             </button>
