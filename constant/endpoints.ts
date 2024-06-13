@@ -1,6 +1,6 @@
 
 // env 0 is development url, 1 is production url
-const env = 0;
+const env = 1;
 
 const baseURLs = [
     "http://localhost:8000/api",

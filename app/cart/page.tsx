@@ -49,9 +49,6 @@ const page = () => {
         dispatch(total(["price","promotionPrice", "choose_count"]))
     }, [dispatch]);
 
-    console.log(exchange);
-    
-
     const checkout = async () => {
 
         const formatCheckout = cart.cart.map((cart : any) => {
@@ -59,15 +56,15 @@ const page = () => {
                 price_data: {
                     currency: exchange.exchange.name ? exchange.exchange.name?.toLowerCase() : 'thb',
                     product_data : {
-                        name: cart.title
+                        name: cart.title,
+                        images: `${endpoints.image}/${cart.image[0]}`
                     },
-                    unit_amount: cart.price
+                    unit_amount: cart.price* 100
                 },
                 quantity: cart.choose_count
             }
         })
 
-        console.log(formatCheckout);
         const payload: any = {
             line_items : formatCheckout
         }
@@ -85,7 +82,7 @@ const page = () => {
                 console.log(data);
                 
                 if(data.data){
-                    window.location.replace(data.data)
+                    // window.location.replace(data.data)
                 }
 
                 return data
