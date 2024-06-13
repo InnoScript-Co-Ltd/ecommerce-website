@@ -23,6 +23,8 @@ import { baseURL, endpoints } from "@/constant/endpoints";
 import Loading from "../loading";
 import { addFav } from "@/services/redux/favSlice";
 import { dynamicBlurDataUrl } from "@/helper/dynamicBlurDataUrl";
+import { useToast } from "@/components/ui/use-toast";
+import Link from "next/link";
 
 interface ITEM {
   id: number,
@@ -77,6 +79,7 @@ const page = ({
   const exchange = useAppSelector((state) => state.exchnage);
   const favState = useAppSelector((state) => state.fav);
   const router = useRouter();
+  const toast = useToast();
 
 
 
@@ -108,6 +111,11 @@ const page = ({
       choose_size: choose.size
     }
     dispatch(addCart(cart));
+    toast.toast({
+      variant: "success",
+      title: "Success",
+      description: "Your item was added!"
+    })
   }
 
   useEffect(() => {
@@ -130,7 +138,7 @@ const page = ({
       if (data.data) {
 
         const updateDetailImage = await Promise.all(
-          data.data.detail_images.map(async (image : any) => {
+          data.data.detail_images.map(async (image: any) => {
             const blurData = await dynamicBlurDataUrl(image)
             return {
               image: image,
@@ -139,11 +147,11 @@ const page = ({
           })
         );
         setDetailImage(updateDetailImage)
-        
-        const productBlurData = await dynamicBlurDataUrl(data.data.product.bg_image.image);
-        
 
-        setItem({...data.data, productBlurData});
+        const productBlurData = await dynamicBlurDataUrl(data.data.product.bg_image.image);
+
+
+        setItem({ ...data.data, productBlurData });
         setLoading(false);
       } else {
         setLoading(false);
@@ -152,7 +160,7 @@ const page = ({
     }
 
   }, [searchParams.item]);
-  
+
 
   useEffect(() => {
     getItem()
@@ -167,18 +175,18 @@ const page = ({
   }, [item])
 
   useEffect(() => {
-    if(cartLists.cart.length > 0 && item){
-      cartLists.cart.filter((cart : any) => {
-        
-        if(cart?.id === item?.id){
-          
+    if (cartLists.cart.length > 0 && item) {
+      cartLists.cart.filter((cart: any) => {
+
+        if (cart?.id === item?.id) {
+
           setSelectColor(cart.choose_color);
           setSelectSize(cart.choose_size);
           setChoose({
             ...choose,
             color: cart.choose_color,
-            size : cart.choose_size,
-            count : cart.choose_count
+            size: cart.choose_size,
+            count: cart.choose_count
           })
         }
       })
@@ -186,13 +194,13 @@ const page = ({
   }, [cartLists.cart, item]);
 
   console.log(detailImage);
-  
-  
+
+
 
   useEffect(() => {
-    if(favState.fav.length > 0){
-      favState.fav.map((fav) => {        
-        if(fav && fav.id === item?.id){
+    if (favState.fav.length > 0) {
+      favState.fav.map((fav) => {
+        if (fav && fav.id === item?.id) {
           setSelectFav(true);
         }
       })
@@ -201,12 +209,12 @@ const page = ({
   }, [favState.fav, item])
 
   useEffect(() => {
-    if(typeof window !== "undefined") {
-        const mediaQuery = window.matchMedia('(max-width: 600px)');
-        setMedia(mediaQuery.matches);
+    if (typeof window !== "undefined") {
+      const mediaQuery = window.matchMedia('(max-width: 600px)');
+      setMedia(mediaQuery.matches);
     }
-}, [])
-  
+  }, [])
+
 
   return (
     <Suspense fallback={<Loading />}>
@@ -222,11 +230,11 @@ const page = ({
 
           <div className="w-full h-full flex flex-col relative">
             {
-              loading === false && detailImage?.slice(0, 4).map((image : any, index : number) => {
+              loading === false && detailImage?.slice(0, 4).map((image: any, index: number) => {
                 return (
                   <Image
                     key={index}
-                    loading="lazy"
+                    priority
                     src={`${endpoints.image}/${image.image}`}
                     alt="listing image"
                     width={0}
@@ -254,7 +262,7 @@ const page = ({
           >
             <CarouselContent>
               {
-                detailImage?.map((image : any, index : number) => (
+                detailImage?.map((image: any, index: number) => (
                   <CarouselItem
                     key={index}
                     className=" w-full h-full"
@@ -264,6 +272,7 @@ const page = ({
                       alt="detail image"
                       width={0}
                       height={0}
+                      priority
                       objectFit="contain"
                       className={`w-full ${media ? '!h-[600px]' : '!h-[800px]'}`}
                       placeholder="blur"
@@ -293,7 +302,7 @@ const page = ({
           <div className=" flex flex-wrap items-center justify-start gap-3">
             {
               item?.color.length > 0 && JSON.parse(item?.color).split(',')?.map((color: string, index: number) => {
-                
+
                 return (
                   <div
                     key={`color_${index}`}
@@ -310,11 +319,11 @@ const page = ({
                     }}
                     onClick={() => {
                       setSelectColor(color);
-                      setChoose({...choose, color: color});
+                      setChoose({ ...choose, color: color });
                       dispatch(Color({
-                        id: item?.id, 
+                        id: item?.id,
                         color: color
-                    }));
+                      }));
                     }}
                     className=" font-bold active:scale-110 active:shadow transition-all duration-300 ease-in"
                   >
@@ -338,7 +347,7 @@ const page = ({
                     key={`size_${index}`}
                     onClick={() => {
                       setSelectSize(size)
-                      setChoose({...choose, size : size})
+                      setChoose({ ...choose, size: size })
                       dispatch(Size({
                         id: item?.id,
                         size: size
@@ -371,22 +380,22 @@ const page = ({
               <p>{choose.count}</p>
               <div className=" flex flex-col items-center justify-center gap-1">
                 <MdKeyboardArrowUp onClick={() => {
-                  if(cartLists.cart.length > 0){
+                  if (cartLists.cart.length > 0) {
                     cartLists.cart.map((cart) => {
-                      if(cart.id === item?.id){
-                        dispatch(addCartCount({id: item?.id}))
-                      }else {
+                      if (cart.id === item?.id) {
+                        dispatch(addCartCount({ id: item?.id }))
+                      } else {
                         addCount();
                       }
                     })
-                  }else {
+                  } else {
                     addCount();
                   }
-        
+
                 }} className=" cursor-pointer active:text-primary active:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
                 <MdKeyboardArrowDown onClick={() => {
-                  if(cartLists.cart.length > 0){
-                    dispatch(reduceCartCount({id: item?.id}))
+                  if (cartLists.cart.length > 0) {
+                    dispatch(reduceCartCount({ id: item?.id }))
                   }
                 }} className=" cursor-pointer active:text-primary active:scale-105 hover:scale-105 w-[20px] h-[20px] border-[1px] border-[#B9B8B9] rounded-full" size={20} />
               </div>
@@ -399,7 +408,7 @@ const page = ({
               Add To Bag
             </button>
 
-            <button 
+            <button
               className={`${selectFav ? 'text-white bg-red-500 border-none' : 'border border-black'} w-[50px] h-[50px] grid items-center justify-center rounded-sm `}
               onClick={() => {
                 dispatch(addFav(item))
@@ -423,34 +432,44 @@ const page = ({
       {
         loading === false && item !== null && item !== undefined && (
           <div>
-        <h1 className=" text-center font-bold text-xl my-[50px]">Similar Product</h1>
-        <div className="w-full h-full relative">
-          <Image
-            src={`${endpoints.image}/${item?.product.bg_image.image}`}
-            alt="detail image"
-            width={0}
-            height={0}
-            objectFit="cover"
-            className={`w-full ${media ? '!h-[600px]' : '!h-full'}`}
-            quality={100}
-            loading={"lazy"}
-            placeholder="blur"
-            blurDataURL={item?.productBlurData}
-            unoptimized
-          />
+            <h1 className=" text-center font-bold text-xl my-[50px]">Similar Product</h1>
+            <div className="w-full h-full relative">
+              <Image
+                src={`${endpoints.image}/${item?.product.bg_image.image}`}
+                alt="detail image"
+                width={0}
+                height={0}
+                objectFit="cover"
+                className={`w-full ${media ? '!h-[600px]' : '!h-full'}`}
+                quality={100}
+                priority
+                placeholder="blur"
+                blurDataURL={item?.productBlurData}
+                unoptimized
+              />
 
-          <div className=" absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-white">
-            <h1 className=" text-[20px] md:text-[50px] font-bold text-center">{item?.product.title}</h1>
-            <p className=" text-[14px] md:text-[30px] font-semibold pt-3 text-center">{item?.product.description}</p>
-            <button
-              className=" block mt-[30px] mx-auto font-bold text-[20px] border border-white px-3 py-2 rounded-[20px] transition duration-150 ease-in-out hover:bg-primary-accent-200 hover:shadow-lg active:text-primary active:shadow-md motion-reduce:transition-none"
-            >
-              Explore
-            </button>
+              <div className=" absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-white">
+                <h1 className=" text-[20px] md:text-[50px] font-bold text-center">{item?.product.title}</h1>
+                <p className=" text-[14px] md:text-[30px] font-semibold pt-3 text-center">{item?.product.description}</p>
+                <Link
+                  href={{
+                    pathname: item.product.man_or_woman === "MAN" ? `/man/detail` : '/woman/detail',
+                    query: {
+                      productName: item.product.product_name,
+                      productIds: item.product.id
+                    }
+                  }}
+                >
+                  <button
+                    className=" block mt-[30px] mx-auto font-bold text-[20px] border border-white px-3 py-2 rounded-[20px] transition duration-150 ease-in-out hover:bg-primary-accent-200 hover:shadow-lg active:text-primary active:shadow-md motion-reduce:transition-none"
+                  >
+                    Explore
+                  </button>
+                </Link>
+              </div>
+
+            </div>
           </div>
-
-        </div>
-      </div>
         )
       }
 

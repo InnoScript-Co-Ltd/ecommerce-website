@@ -82,11 +82,11 @@ const shop = () => {
                                     width={0}
                                     height={media ? 600 : 0}
                                     className={`w-full ${media ? '!h-[600px]' : '!h-full'}`}
-                                    quality="100"
+                                    quality={100}
+                                    priority
                                     objectFit="fill"
                                     objectPosition={"center"}
                                     layout="responsive"
-                                    loading="lazy"
                                     placeholder="blur"
                                     blurDataURL={product.blurData}
                                     unoptimized

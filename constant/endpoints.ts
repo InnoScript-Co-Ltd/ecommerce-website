@@ -23,5 +23,7 @@ export const endpoints = {
     productDetail: '/product-detail',
     exchange: "/exchange",
     item: "/item",
-    contact: "/contact"
+    contact: "/contact",
+    about: "/about-us",
+    video: "/video"
 }
